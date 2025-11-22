@@ -70,7 +70,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, setIsOpen, initialMessa
       {isOpen && (
         <div className="mb-4 w-[90vw] md:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 ring-1 ring-black/5 font-sans">
           {/* Modern Header */}
-          <div className="bg-gradient-to-r from-brand-blue to-[#1a2b4b] p-5 flex justify-between items-center shadow-lg z-10">
+          <div className="bg-brand-blue p-5 flex justify-between items-center shadow-lg z-10">
             <div className="flex items-center gap-3">
               <div className="relative p-2 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
                 <Bot className="text-brand-red" size={24} />
