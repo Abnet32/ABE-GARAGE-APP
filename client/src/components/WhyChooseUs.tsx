@@ -1,5 +1,6 @@
 import React from "react";
 import { UserCheck, Wrench, Tag, Trophy, Check } from "lucide-react";
+import fourteen from '../assets/14.avif'
 
 const FeatureItem = ({
   icon,
@@ -78,9 +79,9 @@ const WhyChooseUs: React.FC = () => {
             </h3>
 
             <div className="flex flex-col md:flex-row gap-8">
-              <div className="md:w-1/2 h-[300px] overflow-hidden">
+              <div className="md:w-1/2 h-[320px] overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80"
+                  src={fourteen}
                   alt="Classic Car"
                   className="w-full h-full object-cover"
                 />
