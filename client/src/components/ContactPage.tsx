@@ -29,7 +29,7 @@ const ContactPage: React.FC = () => {
                 Abe Garage
               </h4>
               <p className="text-[10px] text-gray-500 leading-tight">
-                Shiromeda, Addis Ababa, Ethiopia
+                Addis Ababa, Ethiopia
               </p>
               <div className="flex items-center gap-1 mt-2 text-[10px] text-red-500">
                 ★★★★☆{" "}
@@ -84,7 +84,7 @@ const ContactPage: React.FC = () => {
                   <h4 className="font-bold text-brand-blue font-heading mb-1">
                     Phone:
                   </h4>
-                  <p className="text-sm text-gray-500">+251922019117</p>
+                  <p className="text-sm text-gray-500">+251-922-019-117</p>
                 </div>
               </div>
             </div>

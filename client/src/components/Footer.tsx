@@ -7,6 +7,7 @@ import {
   Facebook,
   Linkedin,
   Twitter,
+  Instagram,
 } from "lucide-react";
 
 interface FooterProps {
@@ -45,7 +46,7 @@ const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="flex items-center gap-8">
               <span className="text-3xl font-bold font-heading">
-                +251922019117
+                +251-922-019-117
               </span>
               <button
                 onClick={() => onNavigate("contact")}
@@ -70,7 +71,7 @@ const Footer: React.FC<FooterProps> = ({
               <p className="text-base text-white font-heading">
                 Addis Ababa, Ethiopia
               </p>
-              <p className="text-xs text-gray-400">Addis Ababa, Ethiopia</p>
+              <p className="text-xs text-gray-400">4 Kilo, Addis Ababa</p>
             </div>
           </div>
           <div className="flex items-center gap-4 mb-4 md:mb-0">
@@ -89,7 +90,7 @@ const Footer: React.FC<FooterProps> = ({
             <div>
               <p className="text-xs text-gray-400">Call us on :</p>
               <p className="text-xs text-white font-bold text-lg">
-                +251922019117
+                +251-922-019-117
               </p>
             </div>
           </div>
@@ -221,6 +222,12 @@ const Footer: React.FC<FooterProps> = ({
                 className="border border-gray-600 p-2 rounded-full hover:bg-brand-red hover:border-brand-red transition-colors hover:bg-red-600"
               >
                 <Twitter size={14} />
+              </a>
+              <a
+                href="#"
+                className="border border-gray-600 p-2 rounded-full hover:bg-brand-red hover:border-brand-red transition-colors hover:bg-red-600"
+              >
+                <Instagram size={14} />
               </a>
             </div>
           </div>

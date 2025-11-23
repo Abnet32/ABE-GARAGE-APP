@@ -79,8 +79,10 @@ const Header: React.FC<HeaderProps> = ({
               "Welcome Admin"
             ) : (
               <>
-                <span className="text-gray-400 hidden sm:inline">Call us:</span>
-                <span>+251922019117</span>
+                <span className="text-gray-400 hidden sm:inline">
+                  Call Abe:
+                </span>
+                <span>+251-922-019-117</span>
               </>
             )}
           </div>
