@@ -36,15 +36,15 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               </div>
             </div>
             {/* Years Experience Badge */}
-            <div className="absolute bottom-0 left-[40%] translate-x-[-50%] translate-y-[20%] bg-white p-2 shadow-xl z-10">
+            <div className="absolute bottom-0 left-[50%] translate-x-[-50%] translate-y-[20%] bg-white p-2 shadow-xl z-10">
               <div className="border-2 border-brand-red/20 p-6 text-center bg-white min-w-[140px]">
                 <span className="block text-5xl font-black text-brand-red font-heading leading-none">
                   24
                 </span>
-                <span className="block text-xs font-bold text-brand-red tracking-widest mt-1">
+                <span className="block text-2xs font-bold text-brand-red tracking-widest mt-1">
                   YEARS
                 </span>
-                <span className="block text-[10px] text-gray-400 tracking-wide uppercase">
+                <span className="block text-[14px] font-bold text-brand-red tracking-wide uppercase">
                   Experience
                 </span>
               </div>
