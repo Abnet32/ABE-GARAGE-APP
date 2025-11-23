@@ -1,5 +1,6 @@
 import React from "react";
 import { PlayButton } from "./Icons";
+import eight from '../assets/8.avif';
 
 const Hero: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const Hero: React.FC = () => {
       {/* Image Background */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2000&auto=format&fit=crop"
+          src={eight}
           alt="Garage Workshop Background"
           className="w-full h-full object-cover"
         />

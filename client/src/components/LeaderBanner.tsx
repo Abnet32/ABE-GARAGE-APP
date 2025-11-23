@@ -1,5 +1,6 @@
 import React from "react";
 import { PlayButton } from "./Icons";
+import seven from '../assets/7.avif';
 
 const LeaderBanner: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const LeaderBanner: React.FC = () => {
       {/* Image Background */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80"
+          src={seven}
           alt="Mechanic working"
           className="w-full h-full object-cover"
         />
