@@ -31,7 +31,7 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => (
   <div
     onClick={onClick}
-    className="bg-white group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-brand-red cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]"
+    className="bg-white group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-red-600 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]"
   >
     <div className="h-52 overflow-hidden relative">
       <img
@@ -61,7 +61,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => (
           </span>
         </span>
 
-        <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue dark:text-gray-300 group-hover:text-brand-red dark:group-hover:text-brand-red">
+        <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue dark:text-gray-300 group-hover:text-red dark:group-hover:text-red-600">
           {service.icon}
         </div>
       </div>

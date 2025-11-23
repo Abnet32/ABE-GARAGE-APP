@@ -11,10 +11,10 @@ interface DashboardOverviewProps {
 }
 
 const StatCard = ({ title, value, icon, label }: { title: string, value: number, icon: React.ReactNode, label: string }) => (
-  <div className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-brand-red cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]">
+  <div className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-red-600 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]">
     <div className="flex justify-between items-start mb-6">
       <div>
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-brand-red transition-colors">{label}</span>
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-red-600 transition-colors">{label}</span>
         <h4 className="text-xl font-bold text-brand-blue font-heading mt-1 pr-4 group-hover:text-gray-800 transition-colors">{title}</h4>
       </div>
     </div>
@@ -29,7 +29,7 @@ const StatCard = ({ title, value, icon, label }: { title: string, value: number,
       >
         View Details <span className="inline-block transition-transform group-hover:translate-x-1 group-hover:rotate-90">+</span>
       </button>
-      <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue group-hover:text-brand-red">
+      <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue group-hover:text-red-600">
         {React.cloneElement(icon as React.ReactElement<any>, { size: 40, strokeWidth: 1.5 })}
       </div>
     </div>

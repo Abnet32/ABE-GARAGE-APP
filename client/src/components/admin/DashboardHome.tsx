@@ -16,10 +16,10 @@ interface DashboardServiceCardProps {
 }
 
 const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({ service, icon }) => (
-  <div className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-brand-red cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]">
+  <div className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-red-600 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]">
     <div className="flex justify-between items-start mb-6">
       <div>
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-brand-red transition-colors">Service</span>
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-red-600 transition-colors">Service</span>
         <h4 className="text-xl font-bold text-brand-blue font-heading mt-1 pr-4 group-hover:text-gray-800 transition-colors">{service.name}</h4>
       </div>
     </div>
@@ -32,7 +32,7 @@ const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({ service, ic
       >
         Read More <span className="inline-block transition-transform group-hover:translate-x-1 group-hover:rotate-90">+</span>
       </button>
-      <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue group-hover:text-brand-red">
+      <div className="opacity-80 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 text-brand-blue group-hover:text-red-600">
         {icon}
       </div>
     </div>

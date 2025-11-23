@@ -105,7 +105,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, setIsOpen, initialMessa
                 <div 
                   className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm relative ${
                     msg.role === 'user' 
-                      ? 'bg-gradient-to-br from-brand-red to-red-700 text-white rounded-tr-sm' 
+                      ? 'bg-red-700 text-white rounded-tr-sm' 
                       : 'bg-white border border-gray-100 text-gray-700 rounded-tl-sm'
                   }`}
                 >
