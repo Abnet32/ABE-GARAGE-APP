@@ -290,7 +290,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout })
              <div className="h-24 shrink-0 flex items-center justify-between px-6 lg:justify-center border-b border-gray-700 bg-brand-blue">
                  <div className="relative w-fit hidden lg:block">
                    <div className="flex items-baseline gap-2">
-                     <h2 className="text-3xl font-bold text-white tracking-tight font-amharic">
+                     <h2 className="text-3xl font-bold text-white tracking-tight font-amharic cursor-pointer" onClick={onLogout}>
                        <span className="text-brand-red">አቤ</span> ጋራዥ
                      </h2>
                    </div>
@@ -338,7 +338,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout })
                     className="w-full flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
                   >
                     <Home size={18} />
-                    Back to Website
+                    Back to Home
                   </button>
                   <button
                     onClick={onLogout}

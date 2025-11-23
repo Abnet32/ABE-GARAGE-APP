@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, isLoggedIn, on
     <header className="w-full font-sans z-50 sticky top-0 shadow-sm">
       {/* Top Bar: Blue Background with Red Left Segment */}
       <div className="bg-brand-blue text-white text-2xs overflow-hidden ">
-        <div className="container mx-auto flex justify-between items-center h-10 md:h-12">
+        <div className="mx-auto flex justify-between items-center h-10 md:h-12">
           <div className="flex h-full items-center">
             {/* Red Block for Slogan - Extended to left with pseudo-element */}
             <div className="bg-brand-red h-full  flex items-center px-4 md:px-6 relative mr-4 md:mr-6 skew-x-0 before:content-[''] before:absolute before:top-0 before:bottom-0 before:right-full before:w-screen before:bg-brand-red">
