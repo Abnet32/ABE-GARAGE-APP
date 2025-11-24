@@ -33,9 +33,8 @@ const Hero: React.FC = () => {
             isVideoPlaying ? "opacity-100" : "opacity-0"
           }`}
           loop
-          muted // Autoplay generally requires muted
+          muted 
           playsInline
-          // Add 'controls' if you want user controls (play/pause/volume) to appear
         />
 
         {/* Image Background (hidden when isVideoPlaying is true) */}
