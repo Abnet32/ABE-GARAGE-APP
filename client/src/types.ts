@@ -1,5 +1,6 @@
 
 import React from 'react';
+import type { AdminView } from "./components/AdminDashboard";
 
 export interface ServiceItem {
   title: string;
@@ -60,6 +61,7 @@ export interface Service {
   id: number;
   name: string;
   description: string;
+  view?: AdminView; // <- add this
 }
 
 export interface Order {

@@ -37,7 +37,7 @@ import InventoryManager from "./admin/InventoryManager";
 import AppointmentCalendar from "./admin/AppointmentCalendar";
 import Footer from "./Footer";
 
-type AdminView =
+export type AdminView =
   | "dashboard"
   | "overview"
   | "orders"
@@ -531,6 +531,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             employees={employees}
             customers={customers}
             services={services}
+            setCurrentView={setCurrentView}
           />
         );
     }

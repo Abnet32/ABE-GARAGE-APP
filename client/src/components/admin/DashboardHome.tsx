@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Package,
 } from "lucide-react";
+import type { AdminView } from "../AdminDashboard.tsx";
 import type { Order, Employee, Customer, Service } from "../../types.ts";
 
 interface DashboardHomeProps {
