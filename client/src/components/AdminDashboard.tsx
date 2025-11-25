@@ -42,6 +42,7 @@ export type AdminView =
   | "overview"
   | "orders"
   | "new-order"
+  | "edit-order"
   | "calendar"
   | "inventory"
   | "employees"
@@ -53,9 +54,8 @@ export type AdminView =
   | "services";
 
 interface AdminDashboardProps {
-  onNavigate: (view: any, sectionId?: string) => void;
+  onNavigate: (view: AdminView, sectionId?: string) => void;
   onLogout: () => void;
-  
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -215,7 +215,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     },
   ]);
 
-
   const [orders, setOrders] = useState<Order[]>([
     {
       id: 101,
@@ -294,6 +293,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // --- Selection State for Editing ---
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
 
   // --- Actions ---
 
@@ -399,7 +399,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setOrders([...orders, newOrder]);
     setCurrentView("orders");
   };
-
+  const handleEditOrder = (order: Order) => {
+    setEditingOrder(order);
+    setCurrentView("edit-order"); // or whatever your page name is
+  };
+  const handleUpdateOrder = (ord: Omit<Order, "id" | "date" | "hash">) => {
+    if (!editingOrder) return;
+    setOrders(
+      orders.map((e) => (e.id === editingOrder.id ? { ...e, ...ord } : e))
+    );
+    setEditingOrder(null);
+    setCurrentView("orders");
+  };
   const updateOrderStatus = (orderId: number, status: Order["status"]) => {
     setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
   };
@@ -474,6 +485,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             customers={customers}
             vehicles={vehicles}
             employees={employees}
+            onEdit={handleEditOrder}
             onUpdateStatus={updateOrderStatus}
           />
         );
@@ -486,6 +498,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             employees={employees}
             onSubmit={addOrder}
             onAddVehicle={addVehicle}
+          />
+        );
+      case "edit-order":
+        return (
+          <CreateOrder
+            customers={customers}
+            vehicles={vehicles}
+            services={services}
+            employees={employees}
+            onSubmit={handleUpdateOrder} // ✔ CORRECT (expects Order)
+            onAddVehicle={addVehicle}
+            initialData={editingOrder || undefined}
+            isEditing
           />
         );
       case "inventory":
@@ -616,13 +641,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
-            <div className="font-bold  text-xl text-white lg:hidden"><h2
-                  className="text-2xl font-bold text-white tracking-tight font-amharic cursor-pointer"
-                  onClick={() => onNavigate("home")}
-                >
-                  <span className="text-brand-red">አቤ</span> ጋራዥ
-                </h2>
-              </div>
+            <div className="font-bold  text-xl text-white lg:hidden">
+              <h2
+                className="text-2xl font-bold text-white tracking-tight font-amharic cursor-pointer"
+                onClick={() => onNavigate("home")}
+              >
+                <span className="text-brand-red">አቤ</span> ጋራዥ
+              </h2>
+            </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="lg:hidden text-gray-400 hover:text-white transition-colors p-1"

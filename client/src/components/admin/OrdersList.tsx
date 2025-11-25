@@ -7,6 +7,7 @@ interface OrdersListProps {
   customers: Customer[];
   vehicles: Vehicle[];
   employees: Employee[];
+  onEdit: (order: Order) => void;
   onUpdateStatus: (id: number, status: Order["status"]) => void;
 }
 
@@ -15,6 +16,7 @@ const OrdersList: React.FC<OrdersListProps> = ({
   customers,
   vehicles,
   employees,
+  onEdit,
   onUpdateStatus,
 }) => {
   return (
@@ -106,7 +108,10 @@ const OrdersList: React.FC<OrdersListProps> = ({
                       </span>
                     </td>
                     <td className="px-6 py-4 flex gap-3">
-                      <button className="text-gray-400 hover:text-brand-blue">
+                      <button
+                        onClick={() => onEdit(order)}
+                        className="text-gray-400 hover:text-brand-blue"
+                      >
                         <Edit size={18} />
                       </button>
                       <button className="text-gray-400 hover:text-brand-blue">
