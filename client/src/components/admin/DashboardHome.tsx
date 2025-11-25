@@ -24,17 +24,23 @@ interface DashboardHomeProps {
   employees: Employee[];
   customers: Customer[];
   services: Service[];
+  setCurrentView: (view: AdminView) => void;
 }
 
 interface DashboardServiceCardProps {
   service: Service;
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
   service,
   icon,
+  onClick,
 }) => (
-  <div className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-red-600 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]">
+  <div
+    onClick={onClick}
+    className="bg-white p-8 group hover:shadow-2xl transition-all duration-300 border-b-[3px] border-transparent hover:border-red-600 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 hover:scale-[1.02]"
+  >
     <div className="flex justify-between items-start mb-6">
       <div>
         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-red-600 transition-colors">
@@ -64,7 +70,10 @@ const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
   </div>
 );
 
-const DashboardHome: React.FC<DashboardHomeProps> = ({ services }) => {
+const DashboardHome: React.FC<DashboardHomeProps> = ({
+  services,
+  setCurrentView,
+}) => {
   const getIconForService = (index: number) => {
     const icons = [
       <TrendingUp size={40} strokeWidth={1.5} />,
@@ -99,6 +108,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ services }) => {
               key={service.id}
               service={service}
               icon={getIconForService(index)}
+              onClick={() => setCurrentView("services")} // or service-specific view
             />
           ))}
         </div>

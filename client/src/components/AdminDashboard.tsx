@@ -55,6 +55,7 @@ type AdminView =
 interface AdminDashboardProps {
   onNavigate: (view: any, sectionId?: string) => void;
   onLogout: () => void;
+  
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -426,6 +427,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             employees={employees}
             customers={customers}
             services={services}
+            setCurrentView={setCurrentView}
           />
         );
       case "overview":
@@ -587,7 +589,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
-            <span className="font-bold text-xl text-white lg:hidden">Menu</span>
+            <div className="font-bold  text-xl text-white lg:hidden"><h2
+                  className="text-2xl font-bold text-white tracking-tight font-amharic cursor-pointer"
+                  onClick={() => onNavigate("home")}
+                >
+                  <span className="text-brand-red">አቤ</span> ጋራዥ
+                </h2>
+              </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="lg:hidden text-gray-400 hover:text-white transition-colors p-1"
