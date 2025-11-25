@@ -142,48 +142,50 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [services, setServices] = useState<Service[]>([
     {
       id: 1,
-      name: "Oil Change",
-      description: "Synthetic oil change and filter replacement",
+      name: "Overview",
+      description: "Key performance indicators and recent activity",
     },
     {
       id: 2,
-      name: "Brake Repair",
-      description: "Brake pad replacement and rotor resurfacing",
+      name: "Add Order",
+      description: "Add new order from customer to be done in garage",
     },
     {
       id: 3,
-      name: "Tire Rotation",
-      description: "Rotate tires to ensure even wear",
+      name: "All Orders",
+      description: "Quick acess to see list of order from customer",
     },
     {
       id: 4,
-      name: "Engine Tune-up",
-      description: "Spark plugs, air filter, and system check",
+      name: "Inventory",
+      description: "Track parts, stock levels, and pricing",
     },
+
     {
       id: 5,
-      name: "Battery Service",
-      description: "Battery check, charging system analysis and replacement",
+      name: "Add Employee",
+      description: "Add a new employee to the system that new for garage",
     },
     {
       id: 6,
-      name: "AC Recharge",
-      description: "Air conditioning system diagnostic and refrigerant refill",
+      name: "All Employees",
+      description:
+        "Quick acess to see list of employee those works  for abe garage",
     },
     {
       id: 7,
-      name: "Wheel Alignment",
-      description: "Computerized wheel alignment for better handling",
+      name: "Add Customer",
+      description: "Add a new customer to the system that new for garage",
     },
     {
       id: 8,
-      name: "Suspension",
-      description: "Struts, shocks, and suspension component repair",
+      name: "All Customers",
+      description: "Quick acess to see list of customer those in abe garage",
     },
     {
       id: 9,
-      name: "Detailing",
-      description: "Complete interior and exterior professional detailing",
+      name: "All Services",
+      description: "Quick acess to see list of services those in abe garage",
     },
   ]);
 

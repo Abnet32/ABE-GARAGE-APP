@@ -1,14 +1,21 @@
 import React from "react";
 import {
-  Activity,
-  Disc,
-  Move,
-  Settings,
-  Battery,
-  Thermometer,
-  Zap,
+  // Activity,
+  // Disc,
+  // Move,
+  // Settings,
+  // Battery,
+  // Thermometer,
+  // Zap,
+  // Wrench,
+  // Droplet,
+  ClipboardList,
+  PlusCircle,
+  Users,
+  UserPlus,
   Wrench,
-  Droplet,
+  TrendingUp,
+  Package,
 } from "lucide-react";
 import type { Order, Employee, Customer, Service } from "../../types.ts";
 
@@ -23,7 +30,6 @@ interface DashboardServiceCardProps {
   service: Service;
   icon: React.ReactNode;
 }
-
 const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
   service,
   icon,
@@ -61,15 +67,15 @@ const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
 const DashboardHome: React.FC<DashboardHomeProps> = ({ services }) => {
   const getIconForService = (index: number) => {
     const icons = [
-      <Activity size={40} strokeWidth={1.5} />,
-      <Settings size={40} strokeWidth={1.5} />,
-      <Disc size={40} strokeWidth={1.5} />,
+      <TrendingUp size={40} strokeWidth={1.5} />,
+      <PlusCircle size={40} strokeWidth={1.5} />,
+      <ClipboardList size={40} strokeWidth={1.5} />,
+      <Package size={40} strokeWidth={1.5} />,
+      <UserPlus size={40} strokeWidth={1.5} />,
+      <Users size={40} strokeWidth={1.5} />,
+      <UserPlus size={40} strokeWidth={1.5} />,
+      <Users size={40} strokeWidth={1.5} />,
       <Wrench size={40} strokeWidth={1.5} />,
-      <Move size={40} strokeWidth={1.5} />,
-      <Droplet size={40} strokeWidth={1.5} />,
-      <Battery size={40} strokeWidth={1.5} />,
-      <Thermometer size={40} strokeWidth={1.5} />,
-      <Zap size={40} strokeWidth={1.5} />,
     ];
     return icons[index % icons.length];
   };
