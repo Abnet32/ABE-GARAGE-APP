@@ -48,13 +48,13 @@ const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
           Service
         </span>
         <h4 className="text-xl font-bold text-brand-blue font-heading mt-1 pr-4 group-hover:text-gray-800 transition-colors">
-          {service.name}
+          {service.names}
         </h4>
       </div>
     </div>
 
     <p className="text-gray-500 text-xs mb-6 leading-relaxed flex-1 line-clamp-3">
-      {service.description}
+      {service.descriptions}
     </p>
 
     <div className="mt-auto flex justify-between items-end">

@@ -61,7 +61,9 @@ export interface Service {
   id: number;
   name: string;
   description: string;
-  view?: AdminView; // <- add this
+  view?: AdminView;
+  names: string;
+  descriptions: string;
 }
 
 export interface Order {
