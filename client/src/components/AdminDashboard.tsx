@@ -617,12 +617,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </button>
         <div className="flex items-center gap-2">
           <span className="font-bold text-lg tracking-wide text-brand-blue font-heading">
-            Admin Panel
+            <span className="text-brand-red">Admin</span> Panel
           </span>
         </div>
-        <div className="w-8 h-8 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shadow-sm">
-          A
-        </div>
+        {/* <div className="w-8 h-8 rounded-full bg-brand-red text-white flex items-center justify-center font-bold text-xs shadow-sm">
+          
+        </div> */}
 
         {/* Red/Blue Bottom Border */}
         <div className="absolute bottom-0 left-0 w-full h-1 flex">
