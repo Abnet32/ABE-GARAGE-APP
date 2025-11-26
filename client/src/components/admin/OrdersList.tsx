@@ -9,6 +9,7 @@ interface OrdersListProps {
   employees: Employee[];
   onEdit: (order: Order) => void;
   onUpdateStatus: (id: number, status: Order["status"]) => void;
+  onViewCustomer: (customer: Customer) => void;
 }
 
 const OrdersList: React.FC<OrdersListProps> = ({
@@ -18,6 +19,7 @@ const OrdersList: React.FC<OrdersListProps> = ({
   employees,
   onEdit,
   onUpdateStatus,
+  onViewCustomer,
 }) => {
   return (
     <div>
@@ -114,7 +116,12 @@ const OrdersList: React.FC<OrdersListProps> = ({
                       >
                         <Edit size={18} />
                       </button>
-                      <button className="text-gray-400 hover:text-brand-blue">
+                      <button
+                        onClick={() => {
+                          if (customer) onViewCustomer(customer);
+                        }}
+                        className="text-gray-400 hover:text-brand-blue"
+                      >
                         <ExternalLink size={18} />
                       </button>
                     </td>

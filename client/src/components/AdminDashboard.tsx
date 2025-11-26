@@ -484,6 +484,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             employees={employees}
             onEdit={handleEditOrder}
             onUpdateStatus={updateOrderStatus}
+            onViewCustomer={handleViewCustomer} 
           />
         );
       case "new-order":
