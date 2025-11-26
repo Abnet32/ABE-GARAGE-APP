@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Customer } from "../../types.ts";
-import { Edit, Trash2, ExternalLink, Search, CheckCircle } from "lucide-react";
+import { Edit, ExternalLink, Search, CheckCircle } from "lucide-react";
 
 interface CustomersListProps {
   customers: Customer[];
@@ -12,7 +12,7 @@ interface CustomersListProps {
 const CustomersList: React.FC<CustomersListProps> = ({
   customers,
   onEdit,
-  onDelete,
+  // onDelete,
   onView,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,13 +135,13 @@ const CustomersList: React.FC<CustomersListProps> = ({
                         <Edit size={18} />
                       </button>
 
-                      <button
+                      {/* <button
                         onClick={() => onDelete(cust.id)}
                         className="text-gray-400 hover:text-brand-red transition-colors"
                         title="Delete"
                       >
                         <Trash2 size={18} />
-                      </button>
+                      </button> */}
 
                       <button
                         onClick={() => onView(cust)}
