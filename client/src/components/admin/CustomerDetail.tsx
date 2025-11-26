@@ -83,7 +83,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                 </div>
                 <button
                   onClick={() => onEdit(customer)}
-                  className="text-brand-red hover:text-brand-red dark:hover:text-white transition-colors"
+                  className="text-brand-blue hover:text-brand-blue dark:hover:text-white transition-colors"
                 >
                   <Edit size={18} />
                 </button>
@@ -91,15 +91,15 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
 
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Mail size={18} className="text-brand-red" />
+                  <Mail size={18} className="text-brand-blue" />
                   <span className="text-sm">{customer.email}</span>
                 </div>
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Phone size={18} className="text-brand-red" />
+                  <Phone size={18} className="text-brand-blue" />
                   <span className="text-sm">{customer.phone}</span>
                 </div>
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Calendar size={18} className="text-brand-red" />
+                  <Calendar size={18} className="text-brand-blue" />
                   <span className="text-sm">
                     Member since {customer.addedDate}
                   </span>
@@ -160,7 +160,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                     </div>
                     <div className="font-bold flex items-center gap-4 mt-1 text-2xs text-brand-blue">
                       <span className="flex items-center gap-1">
-                        <Tag size={14} className="text-brand-red"/> Tag: {vehicle.tag}
+                        <Tag size={14} /> Tag: {vehicle.tag}
                       </span>
                       <span>Mileage: {vehicle.mileage}</span>
                       <span>Color: {vehicle.color}</span>
