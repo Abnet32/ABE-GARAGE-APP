@@ -1,7 +1,7 @@
 import React from "react";
 import type { Customer, Order, Vehicle } from "../../types";
 import {
-  ArrowLeft,
+  // ArrowLeft,
   Phone,
   Mail,
   Calendar,
@@ -24,7 +24,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
   customer,
   orders,
   vehicles,
-  onBack,
+  // onBack,
   onEdit,
 }) => {
   // Filter data specifically for this customer just in case, though parent should pass filtered data
@@ -35,15 +35,16 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
     <div className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-8">
       {/* Header / Back Button */}
       <div className="flex items-center gap-4">
-        <button
+        {/* <button
           onClick={onBack}
           className="p-2 rounded-full bg-white text-brand-blue hover:text-brand-blue hover:bg-gray-100 transition-colors shadow-sm"
         >
           <ArrowLeft size={24} />
-        </button>
+        </button> */}
         <div>
-          <h2 className="text-3xl font-bold text-brand-blue dark:text-white font-heading">
+          <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
             Customer Details
+            <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Viewing profile for {customer.firstName} {customer.lastName}
@@ -82,7 +83,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                 </div>
                 <button
                   onClick={() => onEdit(customer)}
-                  className="text-brand-blue hover:text-brand-blue dark:hover:text-white transition-colors"
+                  className="text-brand-red hover:text-brand-red dark:hover:text-white transition-colors"
                 >
                   <Edit size={18} />
                 </button>
@@ -90,15 +91,15 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
 
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Mail size={18} className="text-brand-blue" />
+                  <Mail size={18} className="text-brand-red" />
                   <span className="text-sm">{customer.email}</span>
                 </div>
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Phone size={18} className="text-brand-blue" />
+                  <Phone size={18} className="text-brand-red" />
                   <span className="text-sm">{customer.phone}</span>
                 </div>
                 <div className="flex items-center gap-3 text-brand-blue font-bold">
-                  <Calendar size={18} className="text-brand-blue" />
+                  <Calendar size={18} className="text-brand-red" />
                   <span className="text-sm">
                     Member since {customer.addedDate}
                   </span>
@@ -159,7 +160,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                     </div>
                     <div className="font-bold flex items-center gap-4 mt-1 text-2xs text-brand-blue">
                       <span className="flex items-center gap-1">
-                        <Tag size={14} /> Tag: {vehicle.tag}
+                        <Tag size={14} className="text-brand-red"/> Tag: {vehicle.tag}
                       </span>
                       <span>Mileage: {vehicle.mileage}</span>
                       <span>Color: {vehicle.color}</span>
@@ -207,10 +208,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                       (v) => v.id === order.vehicleId
                     );
                     return (
-                      <tr
-                        key={order.id}
-                        className="transition-colors"
-                      >
+                      <tr key={order.id} className="transition-colors">
                         <td className="px-4 py-3 font-bold text-brand-blue">
                           #{order.id}
                         </td>
