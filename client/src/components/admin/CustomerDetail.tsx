@@ -55,7 +55,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Profile Card */}
         <div className="lg:col-span-1 space-y-8">
-          <div className="bg-white  rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="bg-white  rounded-xl shadow-sm border-l-4 border-b-4 border-brand-red overflow-hidden">
             <div className="bg-brand-blue h-24 relative">
               <div className="absolute -bottom-10 left-6">
                 <div className="w-20 h-20 rounded-full bg-white dark:bg-gray-800 p-1 shadow-lg">
@@ -110,8 +110,8 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center">
-              <div className="text-brand-red mb-2 flex justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-b-4 border-brand-red  text-center">
+              <div className="text-brand-blue mb-2 flex justify-center">
                 <Car size={32} />
               </div>
               <p className="text-3xl font-bold text-brand-blue">
@@ -121,8 +121,8 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                 Vehicles
               </p>
             </div>
-            <div className="bg-white  p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center">
-              <div className="text-brand-red dark:text-blue-400 mb-2 flex justify-center">
+            <div className="bg-white  p-6 rounded-lg shadow-sm border-l-4 border-b-4 border-brand-red  text-center">
+              <div className="text-brand-blue dark:text-blue-400 mb-2 flex justify-center">
                 <FileText size={32} />
               </div>
               <p className="text-3xl font-bold text-brand-blue">
@@ -138,9 +138,9 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
         {/* Right Column: Vehicles & Orders */}
         <div className="lg:col-span-2 space-y-8">
           {/* Vehicles Section */}
-          <div className="bg-white  rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="bg-white  rounded-xl shadow-sm border-l-4 border-b-4 border-brand-red  p-6">
             <h3 className="text-lg font-bold text-brand-blue dark:text-white mb-4 flex items-center gap-2">
-              <Car size={32} className="text-brand-red" /> Vehicles Owned
+              <Car size={32} className="text-brand-blue" /> Vehicles Owned
             </h3>
 
             <div className="space-y-4">
@@ -154,7 +154,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
                       <span className="font-bold text-lg text-brand-blue dark:text-white">
                         {vehicle.year} {vehicle.make} {vehicle.model}
                       </span>
-                      <span className="text-3xs  font-bold text-brand-red px-2 py-0.5 rounded">
+                      <span className="text-3xs  font-bold text-brand-blue px-2 py-0.5 rounded">
                         {vehicle.type}
                       </span>
                     </div>
@@ -182,11 +182,11 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
           </div>
 
           {/* Orders Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="bg-white rounded-xl shadow-sm border-l-4 border-b-4 border-brand-red  p-6">
             <h3 className="text-lg font-bold text-brand-blue dark:text-white mb-4 flex items-center gap-2">
               <FileText
                 size={32}
-                className="text-brand-red dark:text-blue-400"
+                className="text-brand-blue dark:text-blue-400"
               />{" "}
               Service History
             </h3>
