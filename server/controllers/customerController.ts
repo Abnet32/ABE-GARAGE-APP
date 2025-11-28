@@ -51,6 +51,7 @@ export const getAllCustomers = async (req: Request, res: Response) => {
           firstName: info?.first_name || "",
           lastName: info?.last_name || "",
           active: true, // default if not stored, or you can add `active` in model
+          addedDate: cust.createdAt,
         };
       })
     );

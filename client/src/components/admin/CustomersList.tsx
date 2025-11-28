@@ -13,21 +13,29 @@ const CustomersList: React.FC<CustomersListProps> = ({ onEdit, onView }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getCustomers();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await getCustomers();
-        setCustomers(data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to load customers");
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+      const sorted = [...data].sort((a, b) => {
+        const dateA = a.addedDate ? new Date(a.addedDate).getTime() : 0;
+        const dateB = b.addedDate ? new Date(b.addedDate).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setCustomers(sorted);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to load customers");
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, []);
+
+
 
   const filteredCustomers = customers.filter(
     (c) =>

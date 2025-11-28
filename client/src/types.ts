@@ -46,6 +46,7 @@ export interface Employee {
   active: boolean;
   addedDate: string;
   password?: string;
+  
 }
 
 export interface Customer {
