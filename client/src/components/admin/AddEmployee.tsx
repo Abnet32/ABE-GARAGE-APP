@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import type { EmployeeData } from "../../api/employee";
+import type { Employee } from "../../types.ts";
 import { AlertCircle } from "lucide-react";
-
+import {
+  addEmployee,
+  updateEmployee,
+  deleteEmployee,
+} from "../../api/employee.ts";
 interface AddEmployeeProps {
-  onSubmit: (employee: EmployeeData) => void;
-  initialData?: EmployeeData & { id?: string };
+  onSubmit: (employee: Employee) => void;
+  initialData?: Employee & { id?: string };
   isEditing?: boolean;
 }
 
@@ -52,7 +56,7 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
     if (!validateEmail(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
       isValid = false;
-    }
+    } 
 
     if (!validatePhone(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number (min 10 digits).";
