@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import type { Employee } from "../../types.ts";
 import { AlertCircle } from "lucide-react";
 import {
   addEmployee,
   updateEmployee,
   deleteEmployee,
-} from "../../api/employee.ts";
+  EmployeeData,
+} from "../../api/employee";
+
 interface AddEmployeeProps {
-  onSubmit: (employee: Employee) => void;
-  initialData?: Employee & { id?: string };
+  initialData?: EmployeeData & { id?: string };
   isEditing?: boolean;
+  onDone: () => void; // Refresh and go back
 }
 
 const AddEmployee: React.FC<AddEmployeeProps> = ({
-  onSubmit,
   initialData,
   isEditing = false,
+  onDone,
 }) => {
   const [formData, setFormData] = useState<EmployeeData>({
     firstName: "",
@@ -27,8 +28,11 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
     active: true,
   });
 
+  const [employeeId, setEmployeeId] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+  const [loading, setLoading] = useState(false);
 
+  // Load data if editing
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -40,34 +44,70 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
         password: "",
         active: initialData.active,
       });
+      if (initialData.id) setEmployeeId(initialData.id);
     }
   }, [initialData]);
 
+  // Validation
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePhone = (phone: string) => /^\+?[\d\s-()]{10,}$/.test(phone);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Submit handler
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const newErrors: { email?: string; phone?: string } = {};
     let isValid = true;
 
     if (!validateEmail(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
+      newErrors.email = "Invalid email format.";
       isValid = false;
-    } 
+    }
 
     if (!validatePhone(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number (min 10 digits).";
+      newErrors.phone = "Phone number must be at least 10 digits.";
       isValid = false;
     }
 
     setErrors(newErrors);
+    if (!isValid) return;
 
-    if (isValid) onSubmit(formData);
+    setLoading(true);
+
+    try {
+      if (isEditing && employeeId) {
+        await updateEmployee(employeeId, formData);
+        console.log("Employee updated");
+      } else {
+        await addEmployee(formData);
+        console.log("Employee added");
+      }
+
+      onDone(); // refresh parent
+    } catch (err) {
+      console.error("Failed to submit employee:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Delete employee
+  const handleDelete = async () => {
+    if (!employeeId) return;
+
+    if (!confirm("Are you sure you want to delete this employee?")) return;
+
+    try {
+      await deleteEmployee(employeeId);
+      onDone();
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
+
+  // Form Change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -78,172 +118,154 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
     }
 
     if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
+      setFormData({
+        ...formData,
+        [name]: (e.target as HTMLInputElement).checked,
+      });
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   return (
-    <div className="max-w-4xl">
-      <div className="mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
-          {isEditing
-            ? `Edit: ${formData.firstName} ${formData.lastName}`
-            : "Add a new employee"}
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
-        </h2>
-      </div>
+    <div className="max-w-3xl">
+      <h2 className="text-3xl font-bold mb-6">
+        {isEditing ? "Edit Employee" : "Add Employee"}
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-10 shadow-sm rounded-lg space-y-8"
+        className="space-y-6 bg-white p-8 shadow rounded"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Email */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Employee Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Employee email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full p-4 border rounded text-sm focus:outline-none bg-white text-gray-800 transition-colors ${
-                errors.email
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-200 focus:border-brand-red"
-              }`}
-            />
-            {errors.email && (
-              <div className="flex items-center gap-1 text-red-500 mt-2">
-                <AlertCircle size={14} />
-                <span className="text-xs">{errors.email}</span>
-              </div>
-            )}
-          </div>
-
-          {/* First Name */}
-          <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              First Name
-            </label>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="Employee first name"
-              required
-              value={formData.firstName}
-              onChange={handleChange}
-              className="w-full p-4 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-red bg-white text-gray-800"
-            />
-          </div>
-
-          {/* Last Name */}
-          <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Last Name
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Employee last name"
-              required
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full p-4 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-red bg-white text-gray-800"
-            />
-          </div>
-
-          {/* Phone */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Phone
-            </label>
-            <input
-              type="text"
-              name="phone"
-              placeholder="Employee phone (e.g. +251 911 123 456)"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              className={`w-full p-4 border rounded text-sm focus:outline-none bg-white text-gray-800 transition-colors ${
-                errors.phone
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-200 focus:border-brand-red"
-              }`}
-            />
-            {errors.phone && (
-              <div className="flex items-center gap-1 text-red-500 mt-2">
-                <AlertCircle size={14} />
-                <span className="text-xs">{errors.phone}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Role */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Role
-            </label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full p-4 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-red bg-white text-gray-800"
-            >
-              <option value="Employee">Employee</option>
-              <option value="Manager">Manager</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
-
-          {/* Password */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder={
-                isEditing
-                  ? "Leave blank to keep current password"
-                  : "Employee password"
-              }
-              required={!isEditing}
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-4 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-red bg-white text-gray-800"
-            />
-          </div>
-
-          {/* Active */}
-          <div className="md:col-span-2 flex items-center gap-3">
-            <input
-              type="checkbox"
-              name="active"
-              checked={formData.active}
-              onChange={handleChange}
-              id="active"
-              className="w-5 h-5 text-brand-red"
-            />
-            <label htmlFor="active" className="text-sm text-gray-600">
-              Is active employee
-            </label>
-          </div>
+        {/* Email */}
+        <div>
+          <label className="block font-semibold mb-1">Email</label>
+          <input
+            type="email"
+            name="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className={`w-full p-3 border rounded ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm flex items-center gap-1 mt-1">
+              <AlertCircle size={14} /> {errors.email}
+            </p>
+          )}
         </div>
 
-        <button
-          type="submit"
-          className="bg-brand-red text-white px-10 py-4 font-bold text-sm uppercase rounded shadow-md hover:bg-red-700 transition-colors"
-        >
-          {isEditing ? "Update" : "Add Employee"}
-        </button>
+        {/* First Name */}
+        <div>
+          <label className="block font-semibold mb-1">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            required
+            value={formData.firstName}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded"
+          />
+        </div>
+
+        {/* Last Name */}
+        <div>
+          <label className="block font-semibold mb-1">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            required
+            value={formData.lastName}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded"
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block font-semibold mb-1">Phone</label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className={`w-full p-3 border rounded ${
+              errors.phone ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-sm flex items-center gap-1 mt-1">
+              <AlertCircle size={14} /> {errors.phone}
+            </p>
+          )}
+        </div>
+
+        {/* Role */}
+        <div>
+          <label className="block font-semibold mb-1">Role</label>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded"
+          >
+            <option value="Employee">Employee</option>
+            <option value="Manager">Manager</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block font-semibold mb-1">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder={isEditing ? "Leave empty to keep same password" : ""}
+            required={!isEditing}
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded"
+          />
+        </div>
+
+        {/* Active */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="active"
+            checked={formData.active}
+            onChange={handleChange}
+          />
+          <label>Active employee</label>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-between">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-brand-red text-white px-6 py-3 rounded font-semibold hover:bg-red-700"
+          >
+            {loading
+              ? "Saving..."
+              : isEditing
+              ? "Update Employee"
+              : "Add Employee"}
+          </button>
+
+          {isEditing && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="text-red-500 font-semibold hover:text-red-700"
+            >
+              Delete Employee
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

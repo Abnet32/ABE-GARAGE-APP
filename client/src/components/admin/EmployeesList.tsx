@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Edit, Trash2, Search, CheckCircle, ExternalLink } from "lucide-react";
+import { Edit, Search, CheckCircle, ExternalLink } from "lucide-react";
 import type { Employee } from "../../types.ts";
 import { getEmployees } from "../../api/employee.ts";
 
 interface EmployeesListProps {
   // employees: (EmployeeData & { id: string; addedDate: string })[];
-  onEdit: (employee: EmployeeData & { id: string }) => void;
+  onEdit: (employee: Employee) => void;
   onView: (customer: Employee) => void;
 
-  onDelete: (id: string) => void;
+  // onDelete: (id: string) => void;
 }
 
 const EmployeesList: React.FC<EmployeesListProps> = ({
   // employees,
   onEdit,
   onView,
-  onDelete,
+  // onDelete,
 }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +35,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
         setEmployees(sorted);
         setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         setError("Failed to load Employees");
         setLoading(false);
@@ -112,7 +113,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
       {/* Table */}
       {!isSearching && (
-        <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100">
+        <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100 mt-6">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left text-gray-600">
               <thead className="bg-gray-50 text-xs uppercase font-bold text-gray-700">
@@ -122,7 +123,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
                   <th className="px-6 py-4">Last Name</th>
                   <th className="px-6 py-4">Email</th>
                   <th className="px-6 py-4">Phone</th>
-                  <th className="px-6 py-4">Added Date</th>
+                  {/* <th className="px-6 py-4">Added Date</th> */}
                   <th className="px-6 py-4">Role</th>
                   <th className="px-6 py-4">Action</th>
                 </tr>
@@ -150,7 +151,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
                     <td className="px-6 py-4">{emp.lastName}</td>
                     <td className="px-6 py-4">{emp.email}</td>
                     <td className="px-6 py-4">{emp.phone}</td>
-                    <td className="px-6 py-4">{emp.addedDate}</td>
+                    {/* <td className="px-6 py-4">{emp.addedDate}</td> */}
                     <td className="px-6 py-4 font-bold text-gray-700">
                       {emp.role}
                     </td>
@@ -162,13 +163,13 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
                       >
                         <Edit size={18} />
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => onDelete(emp.id)}
                         className="text-gray-400 hover:text-brand-red transition-colors"
                         title="Delete"
                       >
                         <Trash2 size={18} />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => onView(emp)}
                         className="text-gray-400 hover:text-brand-blue"
