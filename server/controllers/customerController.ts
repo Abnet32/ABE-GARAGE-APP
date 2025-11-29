@@ -2,37 +2,28 @@ import type { Request, Response } from "express";
 import CustomerIdentifier from "../models/CustomerIdentifier.ts";
 import CustomerInfo from "../models/CustomerInfo.ts";
 import jwt from "jsonwebtoken";
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+
+
+// customer login
+export const generateToken = (userId: string, role: string) => {
+  return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: "1d" });
+};
 
 export const customerLogin = async (req: Request, res: Response) => {
-  try {
-    const { email, phone } = req.body;
+  const { email, phone } = req.body;
+  if (!email || !phone)
+    return res.status(400).json({ message: "Email and phone are required" });
 
-    // Find customer by email
-    const customer = await CustomerIdentifier.findOne({ email });
-    if (!customer)
-      return res.status(400).json({ message: "Invalid email or phone" });
+  const customer = await CustomerIdentifier.findOne({
+    email,
+    phone_number: phone,
+  });
+  if (!customer)
+    return res.status(401).json({ message: "Invalid credentials" });
 
-    // For now, login via phone number as a simple check
-    if (customer.phone_number !== phone) {
-      return res.status(400).json({ message: "Invalid email or phone" });
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { id: customer._id, type: "customer" },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
-
-    res.json({
-      message: "Login successful",
-      token,
-      customer_id: customer._id,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
+  const token = generateToken(customer._id.toString(), "customer");
+  res.status(200).json({ token, role: "customer", userId: customer._id });
 };
 
 // GET all customers
@@ -62,7 +53,6 @@ export const getAllCustomers = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const customerRegister = async (req: Request, res: Response) => {
   try {
@@ -132,3 +122,4 @@ export const updateCustomer = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+

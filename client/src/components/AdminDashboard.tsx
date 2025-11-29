@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -451,6 +451,26 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: "customers", label: "Customers", icon: <Users size={18} /> },
     { id: "services", label: "Services", icon: <Wrench size={18} /> },
   ];
+const role = localStorage.getItem("role");
+  const userId = Number(localStorage.getItem("userId"));
+  useEffect(() => {
+    if (role === "Employee") {
+      const emp = employees.find((e) => e.id === userId);
+      if (emp) {
+        setViewingEmployee(emp);
+        setCurrentView("employee-detail");
+      }
+    }
+
+    if (role === "Customer") {
+      const cust = customers.find((c) => c.id === userId);
+      if (cust) {
+        setViewingCustomer(cust);
+        setCurrentView("customer-detail");
+      }
+    }
+  }, []);
+
 
   const renderView = () => {
     switch (currentView) {

@@ -1,10 +1,45 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 import Employee from "../models/Employee.ts";
 import EmployeeInfo from "../models/EmployeeInfo.ts";
 import EmployeePass from "../models/EmployeePass.ts";
 import EmployeeRole from "../models/EmployeeRole.ts";
 import CompanyRole from "../models/CompanyRole.ts";
+
+
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+export const generateToken = (userId: string, role: string) => {
+  return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: "1d" });
+};
+
+export const employeeLogin = async (req: Request, res: Response) => {
+  const { email, phone } = req.body;
+
+  if (!email || !phone) {
+    return res.status(400).json({ message: "Email and phone are required" });
+  }
+
+  // Step 1: find employee by email
+  const employee = await Employee.findOne({ email });
+  if (!employee) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  // Step 2: check phone in EmployeeInfo
+  const info = await EmployeeInfo.findOne({ employee_id: employee._id });
+  if (!info || info.phone !== phone) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  // Generate token
+  const token = generateToken(employee._id.toString(), "employee");
+  res.status(200).json({
+    token,
+    role: "employee",
+    userId: employee._id,
+  });
+};
 
 // Get all employees
 export const getAllEmployees = async (_req: Request, res: Response) => {
@@ -145,3 +180,4 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+

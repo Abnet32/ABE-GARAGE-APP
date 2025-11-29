@@ -27,7 +27,7 @@ export const getCustomers = async () => {
   try {
     const response = await axios.get(API_URL);
     return response.data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Failed to fetch customers:", err);
     throw err;
   }
