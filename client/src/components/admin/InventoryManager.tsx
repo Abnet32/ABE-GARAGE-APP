@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { InventoryItem } from "../../types.ts";
 import {
   Package,
@@ -9,19 +9,15 @@ import {
   Trash2,
 } from "lucide-react";
 
-interface InventoryManagerProps {
-  inventory: InventoryItem[];
-  onAdd: (item: Omit<InventoryItem, "id">) => void;
-  onUpdate: (id: number, item: Partial<InventoryItem>) => void;
-  onDelete: (id: number) => void;
-}
+import {
+  getInventory,
+  addInventoryItem,
+  updateInventoryItem,
+  deleteInventoryItem,
+} from "../../api/inventory.ts";
 
-const InventoryManager: React.FC<InventoryManagerProps> = ({
-  inventory,
-  onAdd,
-  onUpdate,
-  onDelete,
-}) => {
+const InventoryManager: React.FC = () => {
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,20 +31,66 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
     minStockLevel: 5,
   });
 
+  // ---------------- FETCH INVENTORY ----------------
+  const fetchInventory = async () => {
+    try {
+      const data = await getInventory();
+      setInventory(data);
+    } catch (err) {
+      console.error("Failed to fetch inventory:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchInventory();
+  }, []);
+
   const filteredInventory = inventory.filter(
     (item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.partNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ---------------- HELPER TO TRANSFORM ITEM ----------------
+  const transformItem = (item: any): InventoryItem => ({
+    id: item._id,
+    name: item.name,
+    partNumber: item._id?.slice(0, 8).toUpperCase() || "",
+    category: item.category,
+    quantity: item.quantity,
+    price: item.price,
+    minStockLevel: item.min_stock_level,
+  });
+
+  // ---------------- CRUD OPERATIONS ----------------
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingItem) {
-      onUpdate(editingItem.id, formData);
-    } else {
-      onAdd(formData);
+    const payload = {
+      name: formData.name,
+      category: formData.category,
+      quantity: formData.quantity,
+      price: formData.price,
+      min_stock_level: formData.minStockLevel,
+    };
+
+    try {
+      if (editingItem) {
+        const updated = await updateInventoryItem(editingItem.id, payload);
+        setInventory((prev) =>
+          prev.map((item) =>
+            item.id === updated._id ? transformItem(updated) : item
+          )
+        );
+      } else {
+        const newItem = await addInventoryItem(payload);
+        setInventory((prev) => [...prev, transformItem(newItem)]);
+      }
+      setShowForm(false);
+      resetForm(); // close form after save
+    } catch (err) {
+            setShowForm(false);
+      console.error("Failed to save item:", err);
     }
-    resetForm();
   };
 
   const handleEdit = (item: InventoryItem) => {
@@ -63,6 +105,20 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
     });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this inventory item?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteInventoryItem(id);
+      setInventory((prev) => prev.filter((item) => item.id !== id)); // live update
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+    }
   };
 
   const resetForm = () => {
@@ -80,6 +136,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
 
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-8">
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
@@ -122,20 +179,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 }
               />
             </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-                Part Number (SKU)
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full p-3 border border-gray-200 rounded text-sm focus:border-brand-red outline-none"
-                value={formData.partNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, partNumber: e.target.value })
-                }
-              />
-            </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
                 Category
@@ -156,6 +200,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 <option>Tires</option>
               </select>
             </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
                 Quantity
@@ -174,6 +219,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 }
               />
             </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
                 Price ($)
@@ -193,6 +239,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 }
               />
             </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
                 Min Stock Alert
@@ -211,6 +258,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 }
               />
             </div>
+
             <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-4 mt-4">
               <button
                 type="button"
@@ -223,6 +271,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                 type="submit"
                 className="bg-brand-blue text-white px-8 py-3 rounded font-bold text-xs uppercase hover:bg-blue-900 shadow-md"
               >
+                
                 Save Item
               </button>
             </div>
@@ -243,6 +292,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
           </div>
           <Package size={32} className="text-blue-100" />
         </div>
+
         <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-400 uppercase font-bold">
@@ -257,6 +307,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
           </div>
           <p className="text-green-500 font-bold text-xl">$</p>
         </div>
+
         <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-400 uppercase font-bold">
@@ -335,7 +386,7 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({
                       <Edit size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete(item.id)}
+                      onClick={() => handleDelete(item.id)}
                       className="p-2 text-gray-400 hover:text-brand-red hover:bg-red-50 rounded-full transition-colors"
                     >
                       <Trash2 size={16} />
