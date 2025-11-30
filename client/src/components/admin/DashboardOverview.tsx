@@ -69,7 +69,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     <div className="space-y-12">
       <div className="mb-4">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading">
-          System Overview
+          System Overview 
         </h2>
         <p className="text-gray-500 text-sm mt-2">
           Key performance indicators and recent activity.

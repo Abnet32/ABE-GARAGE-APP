@@ -64,7 +64,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <div className="container mx-auto px-4 max-w-lg">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-brand-blue font-heading mb-4 relative inline-block">
+            <div className="absolute -left-12 top-1/2 h-[4px] w-8 bg-brand-red"></div>
             Login to your account
+            <div className="absolute -right-12 top-1/2 h-[4px] w-8 bg-brand-red"></div>
           </h2>
           <p className="text-gray-400 text-xs">Select your role and login</p>
         </div>
