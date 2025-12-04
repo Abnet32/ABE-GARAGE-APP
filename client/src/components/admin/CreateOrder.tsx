@@ -7,6 +7,7 @@ import type {
   Employee,
 } from "../../types.ts";
 import { Search, CheckCircle, X } from "lucide-react";
+import { createOrder as createOrderAPI } from "../../api/order.ts";
 
 interface CreateOrderProps {
   customers: Customer[];
@@ -30,8 +31,9 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
     null
   );
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [selectedServices, setSelectedServices] = useState<number[]>([]);
+  const [selectedServices, setSelectedServices] = useState<(number | string)[]>([]);
   const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // New Vehicle Form State
   const [showVehicleForm, setShowVehicleForm] = useState(false);
@@ -74,21 +76,49 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
     }
   };
 
-  const handleSubmitOrder = () => {
-    if (selectedCustomer && selectedVehicle) {
+  const handleSubmitOrder = async () => {
+    if (!selectedCustomer || !selectedVehicle) {
+      alert("Please select a customer and vehicle");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Transform frontend data to backend format
+      const orderData = {
+        customer_id: String(selectedCustomer.id),
+        vehicle_id: String(selectedVehicle.id),
+        employee_id: employees[0]?.id ? String(employees[0].id) : undefined,
+        services: selectedServices.map((id) => String(id)),
+        description: description || undefined,
+        total_price: 0, // Can be calculated later based on services
+      };
+
+      // Call backend API
+      const createdOrder = await createOrderAPI(orderData);
+      
+      // Call parent callback with transformed data
       onSubmit({
-        customerId: selectedCustomer.id,
-        vehicleId: selectedVehicle.id,
-        employeeId: employees[0]?.id, // Auto assign first employee for now
+        customerId: Number(selectedCustomer.id),
+        vehicleId: Number(selectedVehicle.id),
+        employeeId: employees[0]?.id,
         description,
-        serviceIds: selectedServices,
+        serviceIds: selectedServices.map((id) => Number(id)),
       });
+
       // Reset form
       setSelectedCustomer(null);
       setSelectedVehicle(null);
       setSelectedServices([]);
       setDescription("");
       setSearchTerm("");
+      
+      alert("Order created successfully!");
+    } catch (error: any) {
+      console.error("Failed to create order:", error);
+      alert(error.response?.data?.message || "Failed to create order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -363,9 +393,14 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
 
             <button
               onClick={handleSubmitOrder}
-              className="w-full bg-brand-red text-white px-10 py-5 font-bold text-sm uppercase rounded shadow-md hover:bg-red-700 transition-colors"
+              disabled={isSubmitting}
+              className={`w-full ${
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-brand-red hover:bg-red-700"
+              } text-white px-10 py-5 font-bold text-sm uppercase rounded shadow-md transition-colors`}
             >
-              Submit Order
+              {isSubmitting ? "Submitting..." : "Submit Order"}
             </button>
           </div>
         </div>

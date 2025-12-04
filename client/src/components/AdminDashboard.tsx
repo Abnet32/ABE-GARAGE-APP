@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { getOrders as getOrdersAPI } from "../api/order.ts";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -204,32 +205,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     },
   ]);
 
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: 101,
-      customerId: 1,
-      vehicleId: 1,
-      employeeId: 2,
-      date: "2023-10-25",
-      status: "In Progress",
-      description: "Check engine light is on",
-      serviceIds: [1, 4],
-      hash: "ord_abc",
-      estimatedCompletionDate: "2023-10-27",
-    },
-    {
-      id: 102,
-      customerId: 2,
-      vehicleId: 2,
-      employeeId: 2,
-      date: "2023-10-26",
-      status: "Received",
-      description: "Regular maintenance",
-      serviceIds: [3],
-      hash: "ord_xyz",
-      estimatedCompletionDate: "2023-10-28",
-    },
-  ]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState<string>("");
 
   const [inventory, setInventory] = useState<InventoryItem[]>([
     {
@@ -385,15 +363,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setVehicles([...vehicles, { ...veh, id: Date.now() }]);
   };
 
-  const addOrder = (ord: Omit<Order, "id" | "date" | "status">) => {
-    const newOrder: Order = {
-      ...ord,
-      id: Date.now(),
-      date: new Date().toISOString().split("T")[0],
-      status: "Received",
-      hash: Math.random().toString(36).substring(7),
-    };
-    setOrders([...orders, newOrder]);
+  // Fetch orders from backend
+  const fetchOrders = useCallback(async () => {
+    setOrdersLoading(true);
+    setOrdersError("");
+    try {
+      const data = await getOrdersAPI();
+      setOrders(data);
+    } catch (err: any) {
+      setOrdersError(err.message || "Failed to fetch orders");
+      console.error("Failed to fetch orders:", err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
+
+  // Fetch orders on mount
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const addOrder = async (ord: Omit<Order, "id" | "date" | "status">) => {
+    // Order is already created via API in CreateOrder component
+    // Just refresh the orders list
+    await fetchOrders();
     setCurrentView("orders");
   };
   const handleEditOrder = (order: Order) => {
@@ -408,8 +401,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setEditingOrder(null);
     setCurrentView("orders");
   };
-  const updateOrderStatus = (orderId: number, status: Order["status"]) => {
-    setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
+  const updateOrderStatus = async (orderId: number, status: Order["status"]) => {
+    // Status is already updated via API in OrdersList component
+    // Just refresh the orders list
+    await fetchOrders();
   };
 
   // Inventory Actions
@@ -496,6 +491,12 @@ const role = localStorage.getItem("role");
       case "calendar":
         return <AppointmentCalendar orders={orders} customers={customers} />;
       case "orders":
+        if (ordersLoading) {
+          return <p className="text-center py-10">Loading orders...</p>;
+        }
+        if (ordersError) {
+          return <p className="text-center py-10 text-red-500">{ordersError}</p>;
+        }
         return (
           <OrdersList
             orders={orders}

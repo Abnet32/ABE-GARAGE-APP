@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Order, Customer, Vehicle, Employee } from "../../types.ts";
 import { Edit, ExternalLink } from "lucide-react";
+import { updateOrderStatus as updateOrderStatusAPI } from "../../api/order.ts";
 
 interface OrdersListProps {
   orders: Order[];
@@ -21,6 +22,28 @@ const OrdersList: React.FC<OrdersListProps> = ({
   onUpdateStatus,
   onViewCustomer,
 }) => {
+  const [updatingStatus, setUpdatingStatus] = useState<number | null>(null);
+
+  const handleStatusUpdate = async (orderId: number | string, currentStatus: Order["status"]) => {
+    const nextStatus =
+      currentStatus === "Received"
+        ? "In Progress"
+        : currentStatus === "In Progress"
+        ? "Completed"
+        : "Received";
+    
+    setUpdatingStatus(Number(orderId));
+    try {
+      await updateOrderStatusAPI(String(orderId), nextStatus);
+      // Call parent callback to update local state
+      onUpdateStatus(Number(orderId), nextStatus);
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+      alert("Failed to update order status. Please try again.");
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
   return (
     <div>
       <div className="mb-8">
@@ -60,7 +83,7 @@ const OrdersList: React.FC<OrdersListProps> = ({
                     className="border-b hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4 font-bold text-gray-800">
-                      {order.id}
+                      {String(order.id).slice(-2)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-bold text-brand-blue">
@@ -90,23 +113,20 @@ const OrdersList: React.FC<OrdersListProps> = ({
                     <td className="px-6 py-4">
                       <span
                         onClick={() => {
-                          const nextStatus =
-                            order.status === "Received"
-                              ? "In Progress"
-                              : order.status === "In Progress"
-                              ? "Completed"
-                              : "Received";
-                          onUpdateStatus(order.id, nextStatus);
+                          if (updatingStatus === order.id) return;
+                          handleStatusUpdate(order.id, order.status);
                         }}
                         className={`cursor-pointer px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          order.status === "Completed"
+                          updatingStatus === order.id
+                            ? "bg-gray-300 text-gray-600 cursor-wait"
+                            : order.status === "Completed"
                             ? "bg-green-500 text-white"
                             : order.status === "In Progress"
                             ? "bg-red-400 text-brand-blue"
                             : "bg-gray-500 text-white"
                         }`}
                       >
-                        {order.status}
+                        {updatingStatus === order.id ? "Updating..." : order.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex gap-3">
