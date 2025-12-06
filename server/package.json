@@ -4,11 +4,13 @@
   "description": "",
   "main": "server.js",
   "type": "module",
-  "scripts": {
-    "start": "ts-node server.ts",
-    "dev": "nodemon --watch . --ext ts,json --exec ts-node server.ts",
-    "seed": "ts-node scripts/seed.ts"
-  },
+ "scripts": {
+  "build": "tsc",
+  "start": "node dist/server.js",
+  "dev": "nodemon --watch . --ext ts,json --exec ts-node server.ts",
+  "seed": "ts-node scripts/seed.ts"
+},
+
   "author": "",
   "license": "ISC",
   "dependencies": {

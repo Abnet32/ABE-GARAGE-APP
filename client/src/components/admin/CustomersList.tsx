@@ -5,8 +5,10 @@ import { Edit, ExternalLink, Search, CheckCircle } from "lucide-react";
 import { getCustomers } from "../../api/Customer.ts";
 
 interface CustomersListProps {
-  onEdit: (customer: Customer) => void;
-  onView: (customer: Customer) => void;
+  customers: Customer[];
+  onEdit: (cust: Customer) => void;
+  onDelete: (id: number) => void;
+  onView: (cust: Customer) => void;
 }
 
 const CustomersList: React.FC<CustomersListProps> = ({ onEdit, onView }) => {

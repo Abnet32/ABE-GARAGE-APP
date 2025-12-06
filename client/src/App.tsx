@@ -76,21 +76,30 @@ const AppWrapper: React.FC = () => {
     navigate("/");
   };
 
-  const handleNavigate = (view: ViewState, sectionId?: string) => {
-    setCurrentView(view);
+  const handleNavigate = (view: string, sectionId?: string) => {
+    // Normalize admin-specific views (e.g. "dashboard") to the public 'admin' view
+    const normalizedView: ViewState =
+      view === "dashboard"
+        ? "admin"
+        : ["home", "login", "admin", "contact", "about", "services"].includes(view)
+        ? (view as ViewState)
+        : "home";
+
+    setCurrentView(normalizedView);
 
     // Map view to route
-    const pathMap: Record<ViewState, string> = {
+    const pathMap: Record<string, string> = {
       home: "/",
       login: "/login",
       admin: "/admin",
       contact: "/contact",
       about: "/about",
       services: "/services",
+      dashboard: "/admin",
     };
-    navigate(pathMap[view]);
+    navigate(pathMap[view] || pathMap[normalizedView]);
 
-    if (view === "home" && sectionId) {
+    if (normalizedView === "home" && sectionId) {
       setScrollTarget(sectionId);
     } else {
       window.scrollTo(0, 0);

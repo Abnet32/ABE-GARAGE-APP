@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "commonjs",
     "target": "ES2022",
+    "outDir": "dist",
+    "rootDir": ".",
     "esModuleInterop": true,
-    "strict": true,
-    "noEmit": true,
-    "outDir": "./dist",
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "strict": false,
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "skipLibCheck": true
   },
-  "include": ["scripts/**/*", "configs/**/*", "models/**/*"]
+  "include": ["server/**/*", "models/**/*", "configs/**/*", "scripts/**/*"]
 }

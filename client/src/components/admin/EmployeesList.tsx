@@ -7,7 +7,7 @@ interface EmployeesListProps {
   // employees: (EmployeeData & { id: string; addedDate: string })[];
   onEdit: (employee: Employee) => void;
   onView: (customer: Employee) => void;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string | number) => void;
   // onDelete: (id: string) => void;
 }
 

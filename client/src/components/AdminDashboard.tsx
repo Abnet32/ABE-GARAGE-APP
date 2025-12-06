@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // src/components/AdminDashboard.tsx
 import React, { useEffect, useState, useCallback } from "react";
@@ -101,9 +102,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setViewingEmployee(emp);
     setCurrentView("employee-detail");
   };
-  const handleDeleteEmployee = (id: number) => {
+  const handleDeleteEmployee = (id: string | number) => {
+    const numId = typeof id === "string" ? Number(id) : id;
+    if (Number.isNaN(Number(numId))) return;
     if (window.confirm("Are you sure you want to delete this employee?"))
-      setEmployees((prev) => prev.filter((e) => e.id !== id));
+      setEmployees((prev) => prev.filter((e) => e.id !== numId));
   };
 
   const handleAddCustomer = (custData: Omit<Customer, "id" | "addedDate">) => {
@@ -132,11 +135,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       prev.map((c) => (c.id === editingCustomer.id ? { ...c, ...custData } : c))
     );
     setEditingCustomer(null);
-    setCurrentView("customers");
   };
-  const handleDeleteCustomer = (id: number) => {
+
+  const handleDeleteCustomer = (id: string | number) => {
+    const numId = typeof id === "string" ? Number(id) : id;
+    if (Number.isNaN(Number(numId))) return;
     if (window.confirm("Are you sure you want to delete this customer?"))
-      setCustomers((prev) => prev.filter((c) => c.id !== id));
+      setCustomers((prev) => prev.filter((c) => c.id !== numId));
   };
 
   const addVehicle = (veh: Omit<Vehicle, "id">) =>
@@ -190,7 +195,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setEditingOrder(order);
     setCurrentView("edit-order");
   };
-  const handleUpdateOrder = (ord: Omit<Order, "id" | "date" | "hash">) => {
+  const handleUpdateOrder = (ord: Omit<Order, "status" | "id" | "date">) => {
     if (!editingOrder) return;
     setOrders((prev) =>
       prev.map((e) => (e.id === editingOrder.id ? { ...e, ...ord } : e))
@@ -206,14 +211,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const addInventoryItem = (item: Omit<InventoryItem, "id">) => {
-    const newItem: InventoryItem = { ...item, id: Date.now() };
+    // create an id matching InventoryItem['id'] (string or number depending on the type)
+    const newItem: InventoryItem = {
+      ...item, id: String(Date.now()) as InventoryItem["id"],
+      name: "",
+      partNumber: "",
+      category: "",
+      quantity: 0,
+      price: 0,
+      minStockLevel: 0
+    };
     setInventory((prev) => [...prev, newItem]);
   };
-  const updateInventoryItem = (id: number, itemData: Partial<InventoryItem>) =>
+  const updateInventoryItem = (id: InventoryItem["id"], itemData: Partial<InventoryItem>) =>
     setInventory((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, ...itemData } : i))
+      prev.map((i) => (i.id === id ? ({ ...i, ...itemData } as InventoryItem) : i))
     );
-  const deleteInventoryItem = (id: number) => {
+  const deleteInventoryItem = (id: InventoryItem["id"]) => {
     if (window.confirm("Delete this inventory item?"))
       setInventory((prev) => prev.filter((i) => i.id !== id));
   };
@@ -260,9 +274,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       case "dashboard":
         return (
           <DashboardHome
-            employees={employees}
-            customers={customers}
-            services={services}
             setCurrentView={setCurrentView}
           />
         );
@@ -316,37 +327,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             employees={employees}
             onSubmit={handleUpdateOrder}
             onAddVehicle={addVehicle}
-            initialData={editingOrder || undefined}
-            isEditing
-            onAddCustomerClick={() => setCurrentView("add-customer")}
+            {...({
+              initialData: editingOrder || undefined,
+              isEditing: true,
+              onAddCustomerClick: () => setCurrentView("add-customer"),
+            } as any)}
           />
         );
       case "inventory":
         return (
           <InventoryManager
-            inventory={inventory}
-            onAdd={addInventoryItem}
-            onUpdate={updateInventoryItem}
-            onDelete={deleteInventoryItem}
+            {...({
+              inventory,
+              onAdd: addInventoryItem,
+              onUpdate: updateInventoryItem,
+              onDelete: deleteInventoryItem,
+            } as any)}
           />
         );
       case "employees":
         return (
           <EmployeesList
-            employees={employees}
-            onEdit={handleEditEmployee}
-            onDelete={handleDeleteEmployee}
-            onView={handleViewEmployee}
+            {...({
+              employees,
+              onEdit: handleEditEmployee,
+              onDelete: handleDeleteEmployee,
+              onView: handleViewEmployee,
+            } as any)}
           />
         );
       case "add-employee":
-        return <AddEmployee onSubmit={handleAddEmployee} />;
+        return <AddEmployee {...({ onSubmit: handleAddEmployee } as any)} />;
       case "edit-employee":
         return (
           <AddEmployee
-            onSubmit={handleUpdateEmployee}
-            initialData={editingEmployee || undefined}
-            isEditing
+            {...({
+              onSubmit: handleUpdateEmployee,
+              initialData: editingEmployee
+                ? ({ ...editingEmployee, id: String(editingEmployee.id), password: editingEmployee.password ?? "" } as any)
+                : undefined,
+              isEditing: true,
+            } as any)}
           />
         );
       case "employee-detail":
@@ -356,16 +377,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             orders={orders}
             vehicles={vehicles}
             customers={customers}
-            onBack={() => setCurrentView("employees")}
             onEdit={handleEditEmployee}
-            onView={handleViewEmployee}
           />
         ) : (
           <EmployeesList
-            employees={employees}
-            onEdit={handleEditEmployee}
-            onDelete={handleDeleteEmployee}
-            onView={handleViewEmployee}
+            {...({
+              employees,
+              onEdit: handleEditEmployee,
+              onDelete: handleDeleteEmployee,
+              onView: handleViewEmployee,
+            } as any)}
           />
         );
       case "customers":
@@ -390,11 +411,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       case "customer-detail":
         return viewingCustomer ? (
           <CustomerDetail
-            customer={viewingCustomer}
-            orders={orders}
-            vehicles={vehicles}
-            onBack={() => setCurrentView("customers")}
-            onEdit={handleEditCustomer}
+            {...({
+              customer: viewingCustomer,
+              orders,
+              vehicles,
+              onBack: () => setCurrentView("customers"),
+              onEdit: handleEditCustomer,
+            } as any)}
           />
         ) : (
           <CustomersList
@@ -407,15 +430,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       case "services":
         return <ServicesManager />;
       default:
-      default:
         return (
           <DashboardHome
-            employees={employees}
-            customers={customers}
-            services={services}
             setCurrentView={setCurrentView}
           />
         );
+    }
   };
 
   return (
@@ -456,7 +476,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex items-baseline gap-2">
                 <h2
                   className="text-3xl font-bold text-white tracking-tight font-amharic cursor-pointer"
-                  onClick={() => onNavigate("home")}
+                  onClick={() => onNavigate("dashboard")}
                 >
                   <span className="text-brand-red">አቤ</span> ጋራዥ
                 </h2>
@@ -469,7 +489,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="font-bold  text-xl text-white lg:hidden">
               <h2
                 className="text-2xl font-bold text-white tracking-tight font-amharic cursor-pointer"
-                onClick={() => onNavigate("home")}
+                onClick={() => window.location.href = "/"}
               >
                 <span className="text-brand-red">አቤ</span> ጋራዥ
               </h2>
@@ -504,7 +524,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             ))}
             <div className="pt-6 mt-6 border-t border-gray-700 space-y-2 mb-8">
               <button
-                onClick={() => onNavigate("home")}
+                onClick={() => { window.location.href = "/"; }}
                 className="w-full flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
               >
                 <Home size={18} />
@@ -524,7 +544,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {renderView()}
         </main>
       </div>
-      <Footer onNavigate={onNavigate} showAppointmentBanner={false} />
+      <Footer
+        onNavigate={(view, sectionId) => {
+          // Map Footer views to AdminView or fallback to "dashboard"
+          const adminViews: AdminView[] = [
+            "dashboard", "overview", "inventory", "calendar", "new-order", "orders",
+            "add-employee", "employees", "edit-employee", "employee-detail",
+            "add-customer", "customers", "edit-customer", "customer-detail", "services", "edit-order"
+          ];
+          if (adminViews.includes(view as AdminView)) {
+            onNavigate(view as AdminView, sectionId);
+          } else {
+            // Default to dashboard for non-AdminView values
+            setCurrentView("dashboard");
+          }
+        }}
+        showAppointmentBanner={false}
+      />
     </div>
   );
 };

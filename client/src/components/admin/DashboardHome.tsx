@@ -83,8 +83,6 @@ const DashboardServiceCard: React.FC<DashboardServiceCardProps> = ({
 
 // ---------------- DASHBOARD HOME ----------------
 const DashboardHome: React.FC<DashboardHomeProps> = ({ setCurrentView }) => {
- 
-
   const dashboardItems: DashboardItem[] = [
     {
       id: "overview",
@@ -190,16 +188,22 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setCurrentView }) => {
               onClick={() => {
                 // Map DashboardItem type to AdminView
                 switch (item.type) {
-                  case "Orders":
                   case "NewOrder":
+                    setCurrentView("new-order");
+                    break;
+                  case "Orders":
                     setCurrentView("orders");
                     break;
-                  case "Employees":
                   case "NewEmployee":
+                    setCurrentView("add-employee");
+                    break;
+                  case "Employees":
                     setCurrentView("employees");
                     break;
-                  case "Customers":
                   case "NewCustomer":
+                    setCurrentView("add-customer");
+                    break;
+                  case "Customers":
                     setCurrentView("customers");
                     break;
                   case "Services":
