@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "rootDir": "./",
+    "outDir": "../dist",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["server/**/*.ts", "scripts/**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["../dist"]
 }

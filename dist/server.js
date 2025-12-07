@@ -1,0 +1,28 @@
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import cors from "cors";
+import connectDB from "./configs/db";
+import authRoutes from "./routes/authRoute";
+import customerRoutes from "./routes/customerRoute";
+import employeeRoutes from "./routes/employeeRoute";
+import orderRoutes from "./routes/orderRoute";
+import serviceRoute from "./routes/serviceRoute";
+import inventoryRoute from "./routes/inventoryRoute";
+import vehicleRoute from "./routes/vehicleRoute";
+const app = express();
+const PORT = process.env.PORT || 3001;
+app.use(express.json());
+app.use(cors());
+await connectDB();
+app.get("/", (req, res) => res.send("Server is live..."));
+app.use("/api/auth", authRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/employees", employeeRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/services", serviceRoute);
+app.use("/api/inventories", inventoryRoute);
+app.use("/api/vehicles", vehicleRoute);
+app.listen(PORT, () => {
+    console.log(`server is running on http://localhost:${PORT}`);
+});
