@@ -1,20 +1,20 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import connectDB from "../configs/db";
+import connectDB from "../configs/db.js";
 
-import Employee from "../models/Employee";
-import EmployeeInfo from "../models/EmployeeInfo";
-import EmployeePass from "../models/EmployeePass";
-import CompanyRole from "../models/CompanyRole";
-import EmployeeRole from "../models/EmployeeRole";
-import CustomerIdentifier from "../models/CustomerIdentifier";
-import CustomerInfo from "../models/CustomerInfo";
-import CommonService from "../models/CommonService";
-import Vehicle from "../models/Vehicle";
-import Order from "../models/Order";
-import OrderInfo from "../models/OrderInfo";
-import OrderService from "../models/OrderService";
+import Employee from "../models/Employee.js";
+import EmployeeInfo from "../models/EmployeeInfo.js";
+import EmployeePass from "../models/EmployeePass.js";
+import CompanyRole from "../models/CompanyRole.js";
+import EmployeeRole from "../models/EmployeeRole.js";
+import CustomerIdentifier from "../models/CustomerIdentifier.js";
+import CustomerInfo from "../models/CustomerInfo.js";
+import CommonService from "../models/CommonService.js";
+import Vehicle from "../models/Vehicle.js";
+import Order from "../models/Order.js";
+import OrderInfo from "../models/OrderInfo.js";
+import OrderService from "../models/OrderService.js";
 
 import bcrypt from "bcryptjs";
 

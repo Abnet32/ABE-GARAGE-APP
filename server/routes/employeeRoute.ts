@@ -5,7 +5,7 @@ import {
   updateEmployee,
   deleteEmployee,
   employeeLogin,
-} from "../controllers/employeeController";
+} from "../controllers/employeeController.js";
 
 const router = express.Router();
 

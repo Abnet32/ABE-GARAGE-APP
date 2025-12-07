@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import Employee from "../models/Employee";
-import EmployeeInfo from "../models/EmployeeInfo";
-import EmployeePass from "../models/EmployeePass";
-import EmployeeRole from "../models/EmployeeRole";
-import CompanyRole from "../models/CompanyRole";
+import Employee from "../models/Employee.js";
+import EmployeeInfo from "../models/EmployeeInfo.js";
+import EmployeePass from "../models/EmployeePass.js";
+import EmployeeRole from "../models/EmployeeRole.js";
+import CompanyRole from "../models/CompanyRole.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

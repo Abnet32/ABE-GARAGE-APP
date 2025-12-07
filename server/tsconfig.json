@@ -8,8 +8,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": false,
-    "ignoreDeprecations": "5.0"
+    "strict": false
   },
   "include": ["**/*.ts"],
   "exclude": ["../dist"]

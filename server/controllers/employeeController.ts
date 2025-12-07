@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
-import Employee from "../models/Employee";
-import EmployeeInfo from "../models/EmployeeInfo";
-import EmployeePass from "../models/EmployeePass";
-import EmployeeRole from "../models/EmployeeRole";
-import CompanyRole from "../models/CompanyRole";
+import Employee from "../models/Employee.js";
+import EmployeeInfo from "../models/EmployeeInfo.js";
+import EmployeePass from "../models/EmployeePass.js";
+import EmployeeRole from "../models/EmployeeRole.js";
+import CompanyRole from "../models/CompanyRole.js";
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";

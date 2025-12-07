@@ -3,14 +3,14 @@ dotenv.config();
 import express from "express";
 import type{ Request, Response, NextFunction } from "express";
 import cors from "cors";
-import connectDB from "./configs/db";
-import authRoutes from "./routes/authRoute";
-import customerRoutes from "./routes/customerRoute";
-import employeeRoutes from "./routes/employeeRoute";
-import orderRoutes from "./routes/orderRoute"
-import serviceRoute from "./routes/serviceRoute"
-import inventoryRoute from "./routes/inventoryRoute";
-import vehicleRoute from "./routes/vehicleRoute"
+import connectDB from "./configs/db.js";
+import authRoutes from "./routes/authRoute.js";
+import customerRoutes from "./routes/customerRoute.js";
+import employeeRoutes from "./routes/employeeRoute.js";
+import orderRoutes from "./routes/orderRoute.js"
+import serviceRoute from "./routes/serviceRoute.js"
+import inventoryRoute from "./routes/inventoryRoute.js";
+import vehicleRoute from "./routes/vehicleRoute.js"
 
 const app = express();
 const PORT = process.env.PORT || 3001;

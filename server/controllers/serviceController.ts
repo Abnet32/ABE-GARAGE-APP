@@ -1,6 +1,6 @@
 // backend/controllers/serviceController
 import type{ Request, Response } from "express";
-import CommonService from "../models/CommonService";
+import CommonService from "../models/CommonService.js";
 
 // GET all services
 export const getAllServices = async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import Inventory from "../models/Inventory";
+import Inventory from "../models/Inventory.js";
 
 // -----------------------------
 // GET ALL INVENTORY ITEMS
