@@ -1,13 +1,13 @@
 import type{ Request, Response } from "express";
-import Order from "../models/Order.ts";
-import OrderInfo from "../models/OrderInfo.ts";
-import OrderService from "../models/OrderService.ts";
-import CustomerIdentifier from "../models/CustomerIdentifier.ts";
-import CustomerInfo from "../models/CustomerInfo.ts";
-import Vehicle from "../models/Vehicle.ts";
-import EmployeeInfo from "../models/EmployeeInfo.ts";
-import Employee from "../models/Employee.ts";
-import CommonService from "../models/CommonService.ts";
+import Order from "../models/Order";
+import OrderInfo from "../models/OrderInfo";
+import OrderService from "../models/OrderService";
+import CustomerIdentifier from "../models/CustomerIdentifier";
+import CustomerInfo from "../models/CustomerInfo";
+import Vehicle from "../models/Vehicle";
+import EmployeeInfo from "../models/EmployeeInfo";
+import Employee from "../models/Employee";
+import CommonService from "../models/CommonService";
 
 // -----------------------------
 // HELPER: Format order response for frontend

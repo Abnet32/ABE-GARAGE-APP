@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import CustomerIdentifier from "../models/CustomerIdentifier.ts";
-import CustomerInfo from "../models/CustomerInfo.ts";
+import CustomerIdentifier from "../models/CustomerIdentifier";
+import CustomerInfo from "../models/CustomerInfo";
 import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 

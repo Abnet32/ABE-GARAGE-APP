@@ -1,5 +1,5 @@
 import type{ Request, Response } from "express";
-import Vehicle from "../models/Vehicle.ts";
+import Vehicle from "../models/Vehicle";
 
 // @desc Get all vehicles
 export const getVehicles = async (req: Request, res: Response) => {
