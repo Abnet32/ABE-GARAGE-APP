@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const connectDB = async (): Promise<void> => {
+const connectDB = async () => {
   const mongodbURL = process.env.MONGODB_URL;
   const dbName = "abe-garage";
 

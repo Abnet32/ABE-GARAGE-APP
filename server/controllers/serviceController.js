@@ -1,9 +1,7 @@
-// backend/controllers/serviceController
-import type{ Request, Response } from "express";
 import CommonService from "../models/CommonService.js";
 
 // GET all services
-export const getAllServices = async (req: Request, res: Response) => {
+export const getAllServices = async (req, res) => {
   try {
     const services = await CommonService.find({ active: true });
     res.status(200).json(services);
@@ -14,7 +12,7 @@ export const getAllServices = async (req: Request, res: Response) => {
 };
 
 // GET single service by ID
-export const getServiceById = async (req: Request, res: Response) => {
+export const getServiceById = async (req, res) => {
   try {
     const service = await CommonService.findById(req.params.id);
     if (!service) return res.status(404).json({ message: "Service not found" });
@@ -26,7 +24,7 @@ export const getServiceById = async (req: Request, res: Response) => {
 };
 
 // CREATE a new service
-export const createService = async (req: Request, res: Response) => {
+export const createService = async (req, res) => {
   try {
     const { service_name, service_description } = req.body;
     const newService = await CommonService.create({
@@ -42,7 +40,7 @@ export const createService = async (req: Request, res: Response) => {
 };
 
 // UPDATE a service by ID
-export const updateService = async (req: Request, res: Response) => {
+export const updateService = async (req, res) => {
   try {
     const { service_name, service_description, active } = req.body;
     const updated = await CommonService.findByIdAndUpdate(
@@ -59,7 +57,7 @@ export const updateService = async (req: Request, res: Response) => {
 };
 
 // DELETE a service (soft delete by setting active=false)
-export const deleteService = async (req: Request, res: Response) => {
+export const deleteService = async (req, res) => {
   try {
     const deleted = await CommonService.findByIdAndUpdate(
       req.params.id,

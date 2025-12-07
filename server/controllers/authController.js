@@ -1,4 +1,3 @@
-import type { Request, Response } from "express";
 import Employee from "../models/Employee.js";
 import EmployeeInfo from "../models/EmployeeInfo.js";
 import EmployeePass from "../models/EmployeePass.js";
@@ -7,7 +6,7 @@ import CompanyRole from "../models/CompanyRole.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -51,7 +50,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req, res) => {
   try {
     const { email, password, firstName, lastName, phone, role } = req.body;
 

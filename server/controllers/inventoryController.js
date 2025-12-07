@@ -1,10 +1,9 @@
-import type { Request, Response } from "express";
 import Inventory from "../models/Inventory.js";
 
 // -----------------------------
 // GET ALL INVENTORY ITEMS
 // -----------------------------
-export const getInventory = async (req: Request, res: Response) => {
+export const getInventory = async (req, res) => {
   try {
     const items = await Inventory.find();
     res.json(items);
@@ -16,7 +15,7 @@ export const getInventory = async (req: Request, res: Response) => {
 // -----------------------------
 // GET SINGLE INVENTORY ITEM BY ID
 // -----------------------------
-export const getInventoryById = async (req: Request, res: Response) => {
+export const getInventoryById = async (req, res) => {
   try {
     const item = await Inventory.findById(req.params.id);
     if (!item) return res.status(404).json({ message: "Item not found" });
@@ -29,7 +28,7 @@ export const getInventoryById = async (req: Request, res: Response) => {
 // -----------------------------
 // CREATE NEW INVENTORY ITEM
 // -----------------------------
-export const createInventoryItem = async (req: Request, res: Response) => {
+export const createInventoryItem = async (req, res) => {
   try {
     const { name, part_number, category, quantity, price, min_stock_level } =
       req.body;
@@ -52,7 +51,7 @@ export const createInventoryItem = async (req: Request, res: Response) => {
 // -----------------------------
 // UPDATE INVENTORY ITEM
 // -----------------------------
-export const updateInventoryItem = async (req: Request, res: Response) => {
+export const updateInventoryItem = async (req, res) => {
   try {
     const updatedItem = await Inventory.findByIdAndUpdate(
       req.params.id,
@@ -70,7 +69,7 @@ export const updateInventoryItem = async (req: Request, res: Response) => {
 // -----------------------------
 // DELETE INVENTORY ITEM
 // -----------------------------
-export const deleteInventoryItem = async (req: Request, res: Response) => {
+export const deleteInventoryItem = async (req, res) => {
   try {
     await Inventory.findByIdAndDelete(req.params.id);
     res.json({ message: "Inventory item deleted" });

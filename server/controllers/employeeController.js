@@ -1,19 +1,18 @@
-import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import Employee from "../models/Employee.js";
 import EmployeeInfo from "../models/EmployeeInfo.js";
 import EmployeePass from "../models/EmployeePass.js";
 import EmployeeRole from "../models/EmployeeRole.js";
 import CompanyRole from "../models/CompanyRole.js";
 
-
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
-export const generateToken = (userId: string, role: string) => {
+
+export const generateToken = (userId, role) => {
   return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: "1d" });
 };
 
-export const employeeLogin = async (req: Request, res: Response) => {
+export const employeeLogin = async (req, res) => {
   const { email, phone } = req.body;
 
   if (!email || !phone) {
@@ -42,7 +41,7 @@ export const employeeLogin = async (req: Request, res: Response) => {
 };
 
 // Get all employees
-export const getAllEmployees = async (_req: Request, res: Response) => {
+export const getAllEmployees = async (_req, res) => {
   try {
     const employees = await Employee.find();
     const detailedEmployees = await Promise.all(
@@ -74,7 +73,7 @@ export const getAllEmployees = async (_req: Request, res: Response) => {
 };
 
 // Add new employee
-export const addEmployee = async (req: Request, res: Response) => {
+export const addEmployee = async (req, res) => {
   try {
     const { firstName, lastName, email, phone, role, password, active } =
       req.body;
@@ -116,7 +115,7 @@ export const addEmployee = async (req: Request, res: Response) => {
 };
 
 // Update employee
-export const updateEmployee = async (req: Request, res: Response) => {
+export const updateEmployee = async (req, res) => {
   try {
     const { id } = req.params;
     const { firstName, lastName, email, phone, role, password, active } =
@@ -163,7 +162,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
 };
 
 // Delete employee
-export const deleteEmployee = async (req: Request, res: Response) => {
+export const deleteEmployee = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -180,4 +179,3 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-

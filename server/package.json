@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx tsx watch server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "seed": "node dist/scripts/seed.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed": "node scripts/seed.js"
   },
   "author": "",
   "license": "ISC",

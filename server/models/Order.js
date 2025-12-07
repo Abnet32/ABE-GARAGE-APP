@@ -1,15 +1,8 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose from "mongoose";
 
-export interface IOrder extends Document {
-  customer_id: mongoose.Types.ObjectId;
-  employee_id?: mongoose.Types.ObjectId;
-  vehicle_id?: mongoose.Types.ObjectId;
-  order_date?: Date;
-  order_hash?: string;
-  order_status?: string; // better to store code, but keep string per design
-}
+const { Schema, model, models } = mongoose;
 
-const OrderSchema = new Schema<IOrder>(
+const OrderSchema = new Schema(
   {
     customer_id: {
       type: Schema.Types.ObjectId,
@@ -26,5 +19,4 @@ const OrderSchema = new Schema<IOrder>(
   { timestamps: true }
 );
 
-export default mongoose.models.Order ||
-  mongoose.model<IOrder>("Order", OrderSchema);
+export default models.Order || model("Order", OrderSchema);

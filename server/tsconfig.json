@@ -2,16 +2,20 @@
   "compilerOptions": {
     "target": "ES2020", // Modern JS target, supports top-level await
     "module": "ESNext", // ESM modules
-    "moduleResolution": "node", // Resolves .js imports to .ts during compilation
+    "moduleResolution": "node", // Modern Node module resolution
     "rootDir": "./", // Your source folder
-    "outDir": "../dist", // Compiled JS goes here
-    "esModuleInterop": true, // Allows default import from CommonJS modules
-    "allowJs": true, // Allow importing .js files in TS
+    "outDir": "./dist", // Compiled JS output
+    "esModuleInterop": true, // Allows default import from CommonJS
+    "allowJs": true, // Allow importing .js files
     "checkJs": false, // Don’t type-check .js files
-    "skipLibCheck": true, // Skip type checking of libraries
-    "resolveJsonModule": true, // Allows importing JSON files
-    "strict": false // Turn off strict mode (optional, can enable later)
+    "skipLibCheck": true, // Skip type checking of node_modules
+    "resolveJsonModule": true, // Allow importing JSON files
+    "strict": false, // Turn off strict mode (optional)
+    "ignoreDeprecations": "6.0" // Silence deprecation warnings
   },
-  "include": ["**/*.ts"], // Include all TS files in compilation
-  "exclude": ["../dist"] // Exclude the output folder
+  "include": [
+    "**/*.ts",
+    "**/*.js" // Include all JS files
+  ],
+  "exclude": ["node_modules", "dist"]
 }

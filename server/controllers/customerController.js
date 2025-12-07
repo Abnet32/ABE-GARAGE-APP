@@ -1,16 +1,15 @@
-import type { Request, Response } from "express";
 import CustomerIdentifier from "../models/CustomerIdentifier.js";
 import CustomerInfo from "../models/CustomerInfo.js";
 import jwt from "jsonwebtoken";
+
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
-
 // customer login
-export const generateToken = (userId: string, role: string) => {
+export const generateToken = (userId, role) => {
   return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: "1d" });
 };
 
-export const customerLogin = async (req: Request, res: Response) => {
+export const customerLogin = async (req, res) => {
   const { email, phone } = req.body;
   if (!email || !phone)
     return res.status(400).json({ message: "Email and phone are required" });
@@ -27,14 +26,16 @@ export const customerLogin = async (req: Request, res: Response) => {
 };
 
 // GET all customers
-export const getAllCustomers = async (req: Request, res: Response) => {
+export const getAllCustomers = async (req, res) => {
   try {
     // Populate customer info
     const customers = await CustomerIdentifier.find().lean();
 
     const customerData = await Promise.all(
       customers.map(async (cust) => {
-        const info = await CustomerInfo.findOne({ customer_id: cust._id }).lean();
+        const info = await CustomerInfo.findOne({
+          customer_id: cust._id,
+        }).lean();
         return {
           id: cust._id,
           email: cust.email,
@@ -54,7 +55,7 @@ export const getAllCustomers = async (req: Request, res: Response) => {
   }
 };
 
-export const customerRegister = async (req: Request, res: Response) => {
+export const customerRegister = async (req, res) => {
   try {
     const { email, phone, firstName, lastName } = req.body;
 
@@ -86,7 +87,7 @@ export const customerRegister = async (req: Request, res: Response) => {
 };
 
 // UPDATE customer
-export const updateCustomer = async (req: Request, res: Response) => {
+export const updateCustomer = async (req, res) => {
   try {
     const { id } = req.params; // customer id
     const { email, phone, firstName, lastName, active } = req.body;
@@ -97,7 +98,8 @@ export const updateCustomer = async (req: Request, res: Response) => {
       { email, phone_number: phone },
       { new: true }
     );
-    if (!customer) return res.status(404).json({ message: "Customer not found" });
+    if (!customer)
+      return res.status(404).json({ message: "Customer not found" });
 
     // Find and update CustomerInfo
     const info = await CustomerInfo.findOneAndUpdate(
@@ -122,4 +124,3 @@ export const updateCustomer = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
