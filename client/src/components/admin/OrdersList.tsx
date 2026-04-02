@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import type { Order, Customer, Vehicle, Employee } from "../../types.ts";
+import type { Order, Customer, Vehicle, Employee } from "../../types";
 import { Edit, ExternalLink } from "lucide-react";
-import { updateOrderStatus as updateOrderStatusAPI } from "../../api/order.ts";
+import { updateOrderStatus as updateOrderStatusAPI } from "../../api/order";
 
 interface OrdersListProps {
   orders: Order[];
@@ -24,14 +24,17 @@ const OrdersList: React.FC<OrdersListProps> = ({
 }) => {
   const [updatingStatus, setUpdatingStatus] = useState<number | null>(null);
 
-  const handleStatusUpdate = async (orderId: number | string, currentStatus: Order["status"]) => {
+  const handleStatusUpdate = async (
+    orderId: number | string,
+    currentStatus: Order["status"],
+  ) => {
     const nextStatus =
       currentStatus === "Received"
         ? "In Progress"
         : currentStatus === "In Progress"
-        ? "Completed"
-        : "Received";
-    
+          ? "Completed"
+          : "Received";
+
     setUpdatingStatus(Number(orderId));
     try {
       await updateOrderStatusAPI(String(orderId), nextStatus);
@@ -49,7 +52,7 @@ const OrdersList: React.FC<OrdersListProps> = ({
       <div className="mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
           Orders
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+          <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
         </h2>
       </div>
 
@@ -70,11 +73,11 @@ const OrdersList: React.FC<OrdersListProps> = ({
             <tbody>
               {orders.map((order) => {
                 const customer = customers.find(
-                  (c) => c.id === order.customerId
+                  (c) => c.id === order.customerId,
                 );
                 const vehicle = vehicles.find((v) => v.id === order.vehicleId);
                 const employee = employees.find(
-                  (e) => e.id === order.employeeId
+                  (e) => e.id === order.employeeId,
                 );
 
                 return (
@@ -120,13 +123,15 @@ const OrdersList: React.FC<OrdersListProps> = ({
                           updatingStatus === order.id
                             ? "bg-gray-300 text-gray-600 cursor-wait"
                             : order.status === "Completed"
-                            ? "bg-green-500 text-white"
-                            : order.status === "In Progress"
-                            ? "bg-red-400 text-brand-blue"
-                            : "bg-gray-500 text-white"
+                              ? "bg-green-500 text-white"
+                              : order.status === "In Progress"
+                                ? "bg-red-400 text-brand-blue"
+                                : "bg-gray-500 text-white"
                         }`}
                       >
-                        {updatingStatus === order.id ? "Updating..." : order.status}
+                        {updatingStatus === order.id
+                          ? "Updating..."
+                          : order.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex gap-3">

@@ -73,10 +73,10 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] font-sans flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-100 font-sans flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
-        <div className="mb-4 w-[90vw] md:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 ring-1 ring-black/5 font-sans">
+        <div className="mb-4 w-[90vw] md:w-100 h-150 max-h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 ring-1 ring-black/5 font-sans">
           {/* Modern Header */}
           <div className="bg-brand-blue p-5 flex justify-between items-center shadow-lg z-10">
             <div className="flex items-center gap-3">

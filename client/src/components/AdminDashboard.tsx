@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // src/components/AdminDashboard.tsx
 import React, { useEffect, useState, useCallback } from "react";
-import { getAllData as getAllDataAPI } from "../api/order.ts";
+import { getAllData as getAllDataAPI } from "../api/order";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -26,7 +26,7 @@ import type {
   Order,
   InventoryItem,
   AdminView,
-} from "../types.ts";
+} from "../types";
 
 // Sub-components
 import DashboardHome from "./admin/DashboardHome";
@@ -35,7 +35,7 @@ import OrdersList from "./admin/OrdersList";
 import CreateOrder from "./admin/CreateOrder";
 import EmployeesList from "./admin/EmployeesList";
 import AddEmployee from "./admin/AddEmployee";
-import EmployeeDetail from "./admin/EmployeeDetail.tsx";
+import EmployeeDetail from "./admin/EmployeeDetail";
 import CustomersList from "./admin/CustomersList";
 import AddCustomer from "./admin/AddCustomer";
 import CustomerDetail from "./admin/CustomerDetail";
@@ -56,6 +56,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 }) => {
   const [currentView, setCurrentView] = useState<AdminView>("dashboard");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sessionRole, setSessionRole] = useState<string | null>(null);
+  const [sessionUserId, setSessionUserId] = useState<number | null>(null);
 
   // Backend-driven state
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -89,11 +91,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setCurrentView("edit-employee");
   };
   const handleUpdateEmployee = (
-    empData: Omit<Employee, "id" | "addedDate">
+    empData: Omit<Employee, "id" | "addedDate">,
   ) => {
     if (!editingEmployee) return;
     setEmployees((prev) =>
-      prev.map((e) => (e.id === editingEmployee.id ? { ...e, ...empData } : e))
+      prev.map((e) => (e.id === editingEmployee.id ? { ...e, ...empData } : e)),
     );
     setEditingEmployee(null);
     setCurrentView("employees");
@@ -128,11 +130,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setCurrentView("customer-detail");
   };
   const handleUpdateCustomer = (
-    custData: Omit<Customer, "id" | "addedDate">
+    custData: Omit<Customer, "id" | "addedDate">,
   ) => {
     if (!editingCustomer) return;
     setCustomers((prev) =>
-      prev.map((c) => (c.id === editingCustomer.id ? { ...c, ...custData } : c))
+      prev.map((c) =>
+        c.id === editingCustomer.id ? { ...c, ...custData } : c,
+      ),
     );
     setEditingCustomer(null);
   };
@@ -187,6 +191,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     fetchAllData();
   }, [fetchAllData]);
 
+  useEffect(() => {
+    setSessionRole(window.localStorage.getItem("role"));
+    const storedUserId = Number(window.localStorage.getItem("userId"));
+    setSessionUserId(Number.isNaN(storedUserId) ? null : storedUserId);
+  }, []);
+
   const addOrder = async () => {
     await fetchAllData();
     setCurrentView("orders");
@@ -198,32 +208,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleUpdateOrder = (ord: Omit<Order, "status" | "id" | "date">) => {
     if (!editingOrder) return;
     setOrders((prev) =>
-      prev.map((e) => (e.id === editingOrder.id ? { ...e, ...ord } : e))
+      prev.map((e) => (e.id === editingOrder.id ? { ...e, ...ord } : e)),
     );
     setEditingOrder(null);
     setCurrentView("orders");
   };
-  const updateOrderStatus = async (
-      ) => {
+  const updateOrderStatus = async (_id: number, _status: Order["status"]) => {
     await fetchAllData();
   };
 
   const addInventoryItem = (item: Omit<InventoryItem, "id">) => {
     // create an id matching InventoryItem['id'] (string or number depending on the type)
-    const newItem: InventoryItem = {
-      ...item, id: String(Date.now()) as InventoryItem["id"],
-      name: "",
-      partNumber: "",
-      category: "",
-      quantity: 0,
-      price: 0,
-      minStockLevel: 0
-    };
+    const newItem = {
+      ...item,
+      id: String(Date.now()) as InventoryItem["id"],
+    } as InventoryItem;
     setInventory((prev) => [...prev, newItem]);
   };
-  const updateInventoryItem = (id: InventoryItem["id"], itemData: Partial<InventoryItem>) =>
+  const updateInventoryItem = (
+    id: InventoryItem["id"],
+    itemData: Partial<InventoryItem>,
+  ) =>
     setInventory((prev) =>
-      prev.map((i) => (i.id === id ? ({ ...i, ...itemData } as InventoryItem) : i))
+      prev.map((i) =>
+        i.id === id ? ({ ...i, ...itemData } as InventoryItem) : i,
+      ),
     );
   const deleteInventoryItem = (id: InventoryItem["id"]) => {
     if (window.confirm("Delete this inventory item?"))
@@ -248,33 +257,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: "services", label: "Services", icon: <Wrench size={18} /> },
   ];
 
-  const role = localStorage.getItem("role");
-  const userId = Number(localStorage.getItem("userId"));
   useEffect(() => {
-    if (role === "Employee") {
-      const emp = employees.find((e) => e.id === userId);
+    if (sessionRole === "Employee" && sessionUserId !== null) {
+      const emp = employees.find((e) => e.id === sessionUserId);
       if (emp) {
         setViewingEmployee(emp);
         setCurrentView("employee-detail");
       }
     }
-    if (role === "Customer") {
-      const cust = customers.find((c) => c.id === userId);
+    if (sessionRole === "Customer" && sessionUserId !== null) {
+      const cust = customers.find((c) => c.id === sessionUserId);
       if (cust) {
         setViewingCustomer(cust);
         setCurrentView("customer-detail");
       }
     }
-  }, [employees, customers, role, userId]);
+  }, [employees, customers, sessionRole, sessionUserId]);
 
   const renderView = () => {
     switch (currentView) {
       case "dashboard":
-        return (
-          <DashboardHome
-            setCurrentView={setCurrentView}
-          />
-        );
+        return <DashboardHome setCurrentView={setCurrentView} />;
       case "overview":
         return (
           <DashboardOverview
@@ -362,7 +365,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {...({
               onSubmit: handleUpdateEmployee,
               initialData: editingEmployee
-                ? ({ ...editingEmployee, id: String(editingEmployee.id), password: editingEmployee.password ?? "" } as any)
+                ? ({
+                    ...editingEmployee,
+                    id: String(editingEmployee.id),
+                    password: editingEmployee.password ?? "",
+                  } as any)
                 : undefined,
               isEditing: true,
             } as any)}
@@ -428,11 +435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       case "services":
         return <ServicesManager />;
       default:
-        return (
-          <DashboardHome
-            setCurrentView={setCurrentView}
-          />
-        );
+        return <DashboardHome setCurrentView={setCurrentView} />;
     }
   };
 
@@ -444,7 +447,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-      <header className="lg:hidden h-16 bg-white shadow-md flex items-center justify-between px-4 shrink-0 sticky top-0 z-40 relative">
+      <header className="lg:hidden h-16 bg-white shadow-md flex items-center justify-between px-4 shrink-0 sticky top-0 z-40">
         <button
           onClick={() => setMobileMenuOpen(true)}
           className="p-2 text-brand-blue hover:bg-gray-100 rounded transition-colors"
@@ -463,7 +466,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </header>
       <div className="flex flex-1 relative items-stretch">
         <aside
-          className={`fixed lg:sticky lg:top-0 inset-y-0 left-0 z-[60] lg:z-40 w-64 md:w-72 bg-brand-blue border-r border-gray-700 transform transition-transform duration-200 ease-in-out flex flex-col lg:h-screen ${
+          className={`fixed lg:sticky lg:top-0 inset-y-0 left-0 z-50 lg:z-40 w-64 md:w-72 bg-brand-blue border-r border-gray-700 transform transition-transform duration-200 ease-in-out flex flex-col lg:h-screen ${
             mobileMenuOpen
               ? "translate-x-0"
               : "-translate-x-full lg:translate-x-0"
@@ -487,7 +490,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="font-bold  text-xl text-white lg:hidden">
               <h2
                 className="text-2xl font-bold text-white tracking-tight font-amharic cursor-pointer"
-                onClick={() => window.location.href = "/"}
+                onClick={() => (window.location.href = "/")}
               >
                 <span className="text-brand-red">አቤ</span> ጋራዥ
               </h2>
@@ -522,7 +525,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             ))}
             <div className="pt-6 mt-6 border-t border-gray-700 space-y-2 mb-8">
               <button
-                onClick={() => { window.location.href = "/"; }}
+                onClick={() => {
+                  window.location.href = "/";
+                }}
                 className="w-full flex items-center gap-4 px-4 py-3 text-sm font-bold rounded-lg text-gray-400 hover:bg-slate-800 hover:text-white transition-colors"
               >
                 <Home size={18} />
@@ -546,9 +551,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         onNavigate={(view, sectionId) => {
           // Map Footer views to AdminView or fallback to "dashboard"
           const adminViews: AdminView[] = [
-            "dashboard", "overview", "inventory", "calendar", "new-order", "orders",
-            "add-employee", "employees", "edit-employee", "employee-detail",
-            "add-customer", "customers", "edit-customer", "customer-detail", "services", "edit-order"
+            "dashboard",
+            "overview",
+            "inventory",
+            "calendar",
+            "new-order",
+            "orders",
+            "add-employee",
+            "employees",
+            "edit-employee",
+            "employee-detail",
+            "add-customer",
+            "customers",
+            "edit-customer",
+            "customer-detail",
+            "services",
+            "edit-order",
           ];
           if (adminViews.includes(view as AdminView)) {
             onNavigate(view as AdminView, sectionId);

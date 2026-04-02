@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
-import type { Customer } from "../../types.ts";
+import type { Customer } from "../../types";
 import { Edit, ExternalLink, Search, CheckCircle } from "lucide-react";
-import { getCustomers } from "../../api/Customer.ts";
+import { getCustomers } from "../../api/Customer";
 
 interface CustomersListProps {
   customers: Customer[];
@@ -16,36 +16,34 @@ const CustomersList: React.FC<CustomersListProps> = ({ onEdit, onView }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const data = await getCustomers();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await getCustomers();
 
-      const sorted = [...data].sort((a, b) => {
-        const dateA = a.addedDate ? new Date(a.addedDate).getTime() : 0;
-        const dateB = b.addedDate ? new Date(b.addedDate).getTime() : 0;
-        return dateB - dateA;
-      });
+        const sorted = [...data].sort((a, b) => {
+          const dateA = a.addedDate ? new Date(a.addedDate).getTime() : 0;
+          const dateB = b.addedDate ? new Date(b.addedDate).getTime() : 0;
+          return dateB - dateA;
+        });
 
-      setCustomers(sorted);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to load customers");
-      setLoading(false);
-    }
-  };
-  fetchData();
-}, []);
-
-
+        setCustomers(sorted);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load customers");
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filteredCustomers = customers.filter(
     (c) =>
       c.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.phone.includes(searchTerm)
+      c.phone.includes(searchTerm),
   );
 
   const isSearching = searchTerm.trim().length > 0;
@@ -58,7 +56,7 @@ useEffect(() => {
       <div className="mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
           Customers
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+          <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
         </h2>
       </div>
 
@@ -79,7 +77,7 @@ useEffect(() => {
 
       {/* Search Results */}
       {isSearching && (
-        <div className="border border-gray-100 rounded overflow-hidden max-h-[400px] overflow-y-auto mt-4">
+        <div className="border border-gray-100 rounded overflow-hidden max-h-100 overflow-y-auto mt-4">
           {filteredCustomers.map((c) => (
             <div
               key={c.id}

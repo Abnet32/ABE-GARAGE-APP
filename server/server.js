@@ -10,14 +10,26 @@ import orderRoutes from "./routes/orderRoute.js";
 import serviceRoute from "./routes/serviceRoute.js";
 import inventoryRoute from "./routes/inventoryRoute.js";
 import vehicleRoute from "./routes/vehicleRoute.js";
+import { ensureDefaultAdmin } from "./scripts/ensureDefaultAdmin.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const allowedOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+  credentials: true,
+};
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use(cors(corsOptions));
 
 await connectDB();
+await ensureDefaultAdmin();
 
 app.get("/", (req, res) => res.send("Server is live..."));
 
@@ -28,6 +40,16 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/services", serviceRoute);
 app.use("/api/inventories", inventoryRoute);
 app.use("/api/vehicles", vehicleRoute);
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ message: "Internal server error" });
+});
 
 app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);

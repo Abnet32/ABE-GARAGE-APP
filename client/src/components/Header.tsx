@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="container mx-auto px-4 h-20 flex justify-between items-center">
           {/* Logo (Kept in Amharic) */}
           <div
-            className="flex items-center gap-2 cursor-pointer flex-shrink-0"
+            className="flex items-center gap-2 cursor-pointer shrink-0"
             onClick={() => onNavigate("home")}
           >
             <div className="relative w-fit">
@@ -151,7 +151,7 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Mobile Menu Toggle */}
           <button
-            className="lg:hidden text-brand-blue p-2 hover:bg-gray-100 rounded-md transition-colors border border-gray-100 shadow-sm flex-shrink-0 ml-4"
+            className="lg:hidden text-brand-blue p-2 hover:bg-gray-100 rounded-md transition-colors border border-gray-100 shadow-sm shrink-0 ml-4"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/api/inventory.ts
-import axios from "axios";
-import type { InventoryItem } from "../types.ts";
+import api from "../utils/axios";
+import type { InventoryItem } from "../types";
 
-const API_URL = `${import.meta.env.VITE_BASE_API_URL}/inventories`;
+const API_URL = "/inventories";
 
 // Helper to map backend response to frontend InventoryItem
 const transform = (item: any): InventoryItem => ({
@@ -16,33 +16,35 @@ const transform = (item: any): InventoryItem => ({
   minStockLevel: item.min_stock_level, // map snake_case to camelCase
 });
 
+const unwrapItem = (payload: any) => payload?.item ?? payload;
+
 // GET all inventory
 export const getInventory = async (): Promise<InventoryItem[]> => {
-  const res = await axios.get(API_URL);
-  return res.data.map(transform);
+  const res = await api.get(API_URL);
+  return (Array.isArray(res.data) ? res.data : []).map(transform);
 };
 
 // ADD new inventory item
 export const addInventoryItem = async (
-  item: Omit<InventoryItem, "id" | "partNumber">
+  item: Omit<InventoryItem, "id" | "partNumber">,
 ): Promise<InventoryItem> => {
-  const res = await axios.post(API_URL, item);
-  return transform(res.data);
+  const res = await api.post(API_URL, item);
+  return transform(unwrapItem(res.data));
 };
 
 // UPDATE inventory item
 export const updateInventoryItem = async (
   id: string,
-  item: Partial<Omit<InventoryItem, "id" | "partNumber">>
+  item: Partial<Omit<InventoryItem, "id" | "partNumber">>,
 ): Promise<InventoryItem> => {
-  const res = await axios.put(`${API_URL}/${id}`, item);
-  return transform(res.data);
+  const res = await api.put(`${API_URL}/${id}`, item);
+  return transform(unwrapItem(res.data));
 };
 
 // DELETE inventory item
 export const deleteInventoryItem = async (
-  id: string
+  id: string,
 ): Promise<InventoryItem> => {
-  const res = await axios.delete(`${API_URL}/${id}`);
-  return transform(res.data);
+  const res = await api.delete(`${API_URL}/${id}`);
+  return transform(unwrapItem(res.data));
 };

@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+@import "tailwindcss";
+
+* {
+  font-family: "Outfit", sans-serif;
+}
+
+:root {
+  --brand-red: #e61c23;
+  --brand-blue: #0b132b;
+  --brand-dark: #111827;
+}
+
+.text-brand-red {
+  color: var(--brand-red);
+}
+
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+
+.bg-brand-red {
+  background-color: var(--brand-red);
+}
+
+.bg-brand-blue {
+  background-color: var(--brand-blue);
+}
+
+.border-brand-red {
+  border-color: var(--brand-red);
+}
+
+.border-brand-blue {
+  border-color: var(--brand-blue);
+}
+
+@font-face {
+  font-family: "Benaiah";
+  src:
+    url("/fonts/Benaiah.ttf") format("truetype"),
+    url("/fonts/Benaiah.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-amharic {
+  font-family: "Benaiah", "Noto Serif Ethiopic", serif;
+}
+
+@layer base {
+  a,
+  button {
+    cursor: pointer;
+  }
+}

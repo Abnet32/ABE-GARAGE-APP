@@ -3,16 +3,16 @@ import {
   customerLogin,
   getAllCustomers,
   customerRegister,
-  updateCustomer
+  updateCustomer,
 } from "../controllers/customerController.js";
+import { auth } from "../middleware/authMiddleware.js";
+import { adminOnly } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
 router.post("/login", customerLogin);
-router.get("/", getAllCustomers);
-router.post("/register", customerRegister);
-router.put("/:id", updateCustomer);
-
-
+router.get("/", auth, adminOnly, getAllCustomers);
+router.post("/register", auth, adminOnly, customerRegister);
+router.put("/:id", auth, adminOnly, updateCustomer);
 
 export default router;

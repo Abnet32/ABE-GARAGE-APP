@@ -5,7 +5,7 @@ import {
   updateEmployee,
   deleteEmployee,
   type EmployeeData,
-} from "../../api/employee.ts";
+} from "../../api/employee";
 
 interface AddEmployeeProps {
   initialData?: EmployeeData & { id?: string };
@@ -109,7 +109,7 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
 
   // Form Change
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
 
@@ -252,8 +252,8 @@ const AddEmployee: React.FC<AddEmployeeProps> = ({
             {loading
               ? "Saving..."
               : isEditing
-              ? "Update Employee"
-              : "Add Employee"}
+                ? "Update Employee"
+                : "Add Employee"}
           </button>
 
           {isEditing && (

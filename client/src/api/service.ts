@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/api/service.ts
-import type { Service } from "../types.ts";
+import type { Service } from "../types";
+import api from "../utils/axios";
 
-const API_URL = `${import.meta.env.VITE_BASE_API_URL}/services`;
+const API_URL = "/services";
 
 // ✅ Convert backend → frontend format
 const transform = (s: any): Service => ({
@@ -14,57 +15,34 @@ const transform = (s: any): Service => ({
 });
 
 export const getServices = async (): Promise<Service[]> => {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Failed to fetch services");
-
-  const data = await res.json();
-  return data.map(transform);
+  const res = await api.get(API_URL);
+  return res.data.map(transform);
 };
 
 export const addServiceAPI = async (
-  service: Omit<Service, "id">
+  service: Omit<Service, "id">,
 ): Promise<Service> => {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      service_name: service.name,
-      service_description: service.description,
-    }),
+  const res = await api.post(API_URL, {
+    service_name: service.name,
+    service_description: service.description,
   });
-
-  if (!res.ok) throw new Error("Failed to add service");
-
-  const data = await res.json();
-  return transform(data);
+  return transform(res.data);
 };
 
 export const updateServiceAPI = async (
   id: string,
-  service: Omit<Service, "id">
+  service: Omit<Service, "id">,
 ): Promise<Service> => {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      service_name: service.name,
-      service_description: service.description,
-    }),
+  const res = await api.put(`${API_URL}/${id}`, {
+    service_name: service.name,
+    service_description: service.description,
   });
-
-  if (!res.ok) throw new Error("Failed to update service");
-
-  const data = await res.json();
-  return transform(data);
+  return transform(res.data);
 };
 
 export const deleteServiceAPI = async (
-  id: string
+  id: string,
 ): Promise<{ message: string }> => {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!res.ok) throw new Error("Failed to delete service");
-  return res.json();
+  const res = await api.delete(`${API_URL}/${id}`);
+  return res.data;
 };

@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Users, ClipboardList, Wrench, TrendingUp } from "lucide-react";
-import type { Order, Employee, Customer, Service } from "../../types.ts";
+import { getDashboardSummary } from "../../api/dashboard";
+import type {
+  Order,
+  Employee,
+  Customer,
+  Service,
+  DashboardSummary,
+} from "../../types";
 
 interface DashboardOverviewProps {
   orders: Order[];
@@ -62,15 +69,43 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   customers,
   services,
 }) => {
-  const pendingOrders = orders.filter(
-    (o) => o.status === "Received" || o.status === "In Progress"
-  ).length;
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadSummary = async () => {
+      setLoading(true);
+      try {
+        const data = await getDashboardSummary();
+        setSummary(data);
+      } catch (error) {
+        console.error("Failed to load dashboard summary:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSummary();
+  }, []);
+
+  const fallbackPendingOrders = useMemo(
+    () =>
+      orders.filter(
+        (o) => o.status === "Received" || o.status === "In Progress",
+      ).length,
+    [orders],
+  );
+
+  const totalOrders = summary?.totals.orders ?? orders.length;
+  const pendingOrders = summary?.totals.pendingOrders ?? fallbackPendingOrders;
+  const teamMembers = summary?.totals.employees ?? employees.length;
+  const activeServices = summary?.totals.activeServices ?? services.length;
 
   return (
     <div className="space-y-12">
       <div className="mb-4">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading">
-          System Overview 
+          System Overview
         </h2>
         <p className="text-gray-500 text-sm mt-2">
           Key performance indicators and recent activity.
@@ -81,7 +116,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <StatCard
           title="Total Orders"
           label="Transactions"
-          value={orders.length}
+          value={totalOrders}
           icon={<ClipboardList />}
         />
         <StatCard
@@ -93,13 +128,13 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <StatCard
           title="Team Members"
           label="Workforce"
-          value={employees.length}
+          value={teamMembers}
           icon={<Users />}
         />
         <StatCard
           title="Active Services"
           label="Operations"
-          value={services.length}
+          value={activeServices}
           icon={<Wrench />}
         />
       </div>
@@ -108,36 +143,74 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <h3 className="text-2xl font-bold text-brand-blue font-heading mb-6">
           Recent Activity
         </h3>
+        {loading && (
+          <p className="text-gray-500 text-sm italic mb-4">
+            Loading summary...
+          </p>
+        )}
         <div className="space-y-4">
-          {orders.slice(0, 5).map((order) => {
-            const customer = customers.find((c) => c.id === order.customerId);
-            return (
-              <div
-                key={order.id}
-                className="flex items-center justify-between py-4 border-b border-gray-50 last:border-0"
-              >
-                <div>
-                  <p className="font-bold text-base text-brand-blue">
-                    Order #{order.id} - {customer?.firstName}{" "}
-                    {customer?.lastName}
-                  </p>
-                  <p className="text-sm text-gray-500">{order.description}</p>
-                </div>
-                <span
-                  className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase ${
-                    order.status === "Completed"
-                      ? "bg-green-100 text-green-600"
-                      : order.status === "In Progress"
-                      ? "bg-red-100 text-red-600"
-                      : "bg-blue-100 text-brand-blue"
-                  }`}
+          {summary?.recentActivity?.length
+            ? summary.recentActivity.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex items-center justify-between py-4 border-b border-gray-50 last:border-0"
                 >
-                  {order.status}
-                </span>
-              </div>
-            );
-          })}
-          {orders.length === 0 && (
+                  <div>
+                    <p className="font-bold text-base text-brand-blue">
+                      Order #{activity.id.slice(-6)} - {activity.customerName}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {activity.orderHash
+                        ? `Ref: ${activity.orderHash}`
+                        : "Recent order activity"}
+                    </p>
+                  </div>
+                  <span
+                    className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase ${
+                      activity.status === "Completed"
+                        ? "bg-green-100 text-green-600"
+                        : activity.status === "In Progress"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-blue-100 text-brand-blue"
+                    }`}
+                  >
+                    {activity.status}
+                  </span>
+                </div>
+              ))
+            : orders.slice(0, 5).map((order) => {
+                const customer = customers.find(
+                  (c) => c.id === order.customerId,
+                );
+                return (
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between py-4 border-b border-gray-50 last:border-0"
+                  >
+                    <div>
+                      <p className="font-bold text-base text-brand-blue">
+                        Order #{order.id} - {customer?.firstName}{" "}
+                        {customer?.lastName}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {order.description}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase ${
+                        order.status === "Completed"
+                          ? "bg-green-100 text-green-600"
+                          : order.status === "In Progress"
+                            ? "bg-red-100 text-red-600"
+                            : "bg-blue-100 text-brand-blue"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+                );
+              })}
+          {!summary?.recentActivity?.length && orders.length === 0 && (
             <p className="text-gray-500 text-sm italic">No recent activity.</p>
           )}
         </div>

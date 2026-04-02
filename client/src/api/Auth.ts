@@ -1,7 +1,4 @@
-import axios from "axios";
-
-// Base URL for your backend
-const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
+import api from "../utils/axios";
 
 interface LoginResponse {
   token: string;
@@ -10,30 +7,13 @@ interface LoginResponse {
   message?: string;
 }
 
-// Admin login data
-interface AdminLoginData {
+interface LoginData {
   email: string;
   password: string;
 }
 
-// Employee / Customer login data
-interface UserLoginData {
-  email: string;
-  phone: string;
-}
-
-// Unified login function
-export const loginUser = async (
-  data: AdminLoginData | UserLoginData,
-  role: "admin" | "employee" | "customer"
-): Promise<LoginResponse> => {
-  let url = "";
-
-  if (role === "admin") url = `${API_BASE_URL}/auth/login`;
-  else if (role === "employee") url = `${API_BASE_URL}/employees/login`;
-  else if (role === "customer") url = `${API_BASE_URL}/customers/login`;
-
-  const response = await axios.post<LoginResponse>(url, data);
+export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
+  const response = await api.post<LoginResponse>("/auth/login", data);
   return response.data;
 };
 
@@ -45,6 +25,6 @@ interface RegisterData {
 }
 
 export const registerUser = async (data: RegisterData) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/register`, data);
+  const response = await api.post("/auth/register", data);
   return response.data;
 };

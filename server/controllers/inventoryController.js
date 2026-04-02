@@ -33,6 +33,12 @@ export const createInventoryItem = async (req, res) => {
     const { name, part_number, category, quantity, price, min_stock_level } =
       req.body;
 
+    if (!name || !category) {
+      return res
+        .status(400)
+        .json({ message: "name and category are required" });
+    }
+
     const newItem = await Inventory.create({
       name,
       part_number,
@@ -42,7 +48,7 @@ export const createInventoryItem = async (req, res) => {
       min_stock_level,
     });
 
-    res.json({ message: "Inventory item created", item: newItem });
+    res.status(201).json({ message: "Inventory item created", item: newItem });
   } catch (error) {
     res.status(500).json({ message: "Failed to create inventory item" });
   }
@@ -56,7 +62,7 @@ export const updateInventoryItem = async (req, res) => {
     const updatedItem = await Inventory.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true },
     );
     if (!updatedItem)
       return res.status(404).json({ message: "Item not found" });
@@ -71,8 +77,11 @@ export const updateInventoryItem = async (req, res) => {
 // -----------------------------
 export const deleteInventoryItem = async (req, res) => {
   try {
-    await Inventory.findByIdAndDelete(req.params.id);
-    res.json({ message: "Inventory item deleted" });
+    const deleted = await Inventory.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.json({ message: "Inventory item deleted", item: deleted });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete inventory item" });
   }

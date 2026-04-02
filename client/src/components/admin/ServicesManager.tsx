@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, { useState, useEffect } from "react";
-import type { Service } from "../../types.ts";
+import type { Service } from "../../types";
 import { Edit, Trash2 } from "lucide-react";
 import {
   getServices,
   addServiceAPI,
   updateServiceAPI,
   deleteServiceAPI,
-} from "../../api/service.ts";
+} from "../../api/service";
 
 interface ServicesManagerProps {
   // Remove local handlers, we handle API inside now
@@ -44,15 +44,15 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
       if (editingId !== null) {
         const updated = await updateServiceAPI(
           editingId,
-          formData as unknown as Omit<Service, "id">
+          formData as unknown as Omit<Service, "id">,
         );
         setServices((prev) =>
-          prev.map((s) => (s.id === editingId ? updated : s))
+          prev.map((s) => (s.id === editingId ? updated : s)),
         );
         setEditingId(null);
       } else {
         const added = await addServiceAPI(
-          formData as unknown as Omit<Service, "id">
+          formData as unknown as Omit<Service, "id">,
         );
         setServices((prev) => [...prev, added]);
       }

@@ -7,6 +7,7 @@ import Vehicle from "../models/Vehicle.js";
 import EmployeeInfo from "../models/EmployeeInfo.js";
 import Employee from "../models/Employee.js";
 import CommonService from "../models/CommonService.js";
+import Inventory from "../models/Inventory.js";
 
 // -----------------------------
 // HELPER: Format order response for frontend
@@ -84,6 +85,107 @@ const formatOrderResponse = async (order) => {
 };
 
 // -----------------------------
+// DASHBOARD SUMMARY
+// -----------------------------
+export const getDashboardSummary = async (req, res) => {
+  try {
+    const [
+      totalOrders,
+      totalEmployees,
+      totalCustomers,
+      totalServices,
+      lowStockCount,
+      statusCounts,
+      revenueAgg,
+      recentOrders,
+    ] = await Promise.all([
+      Order.countDocuments(),
+      Employee.countDocuments(),
+      CustomerIdentifier.countDocuments(),
+      CommonService.countDocuments({ active: true }),
+      Inventory.countDocuments({
+        $expr: { $lte: ["$quantity", "$min_stock_level"] },
+      }),
+      Order.aggregate([
+        {
+          $group: {
+            _id: "$order_status",
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+      OrderInfo.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: "$order_total_price" },
+          },
+        },
+      ]),
+      Order.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .populate("customer_id")
+        .lean(),
+    ]);
+
+    const statusMap = {
+      Received: 0,
+      "In Progress": 0,
+      Completed: 0,
+      Canceled: 0,
+    };
+
+    for (const row of statusCounts) {
+      const key = row?._id;
+      if (key && Object.prototype.hasOwnProperty.call(statusMap, key)) {
+        statusMap[key] = row.count;
+      }
+    }
+
+    const pendingOrders = statusMap.Received + statusMap["In Progress"];
+    const totalRevenue = revenueAgg?.[0]?.totalRevenue || 0;
+
+    const recentActivity = recentOrders.map((order) => ({
+      id: String(order._id),
+      orderHash: order.order_hash,
+      status: order.order_status || "Received",
+      date: order.order_date || order.createdAt,
+      customerName:
+        order.customer_id && typeof order.customer_id === "object"
+          ? `${order.customer_id.first_name || ""} ${order.customer_id.last_name || ""}`.trim() ||
+            order.customer_id.email ||
+            "Unknown customer"
+          : "Unknown customer",
+    }));
+
+    res.json({
+      totals: {
+        orders: totalOrders,
+        pendingOrders,
+        employees: totalEmployees,
+        customers: totalCustomers,
+        activeServices: totalServices,
+        lowStockItems: lowStockCount,
+      },
+      statuses: statusMap,
+      revenue: {
+        total: totalRevenue,
+      },
+      recentActivity,
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard summary:", error);
+    res
+      .status(500)
+      .json({
+        message: "Failed to fetch dashboard summary",
+        error: error.message,
+      });
+  }
+};
+
+// -----------------------------
 // GET ALL ORDERS
 // -----------------------------
 export const getOrders = async (req, res) => {
@@ -95,7 +197,7 @@ export const getOrders = async (req, res) => {
       .sort({ createdAt: -1 });
 
     const enrichedOrders = await Promise.all(
-      orders.map((order) => formatOrderResponse(order))
+      orders.map((order) => formatOrderResponse(order)),
     );
 
     res.json(enrichedOrders);
@@ -221,19 +323,15 @@ export const updateOrder = async (req, res) => {
 
     const validStatuses = ["Received", "In Progress", "Completed", "Canceled"];
     if (order_status && !validStatuses.includes(order_status)) {
-      return res
-        .status(400)
-        .json({
-          message: `Invalid status. Must be one of: ${validStatuses.join(
-            ", "
-          )}`,
-        });
+      return res.status(400).json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
     }
 
     const updated = await Order.findByIdAndUpdate(
       orderId,
       { order_status: order_status || "Received" },
-      { new: true }
+      { new: true },
     )
       .populate("customer_id")
       .populate("employee_id")
@@ -245,7 +343,7 @@ export const updateOrder = async (req, res) => {
       await OrderInfo.findOneAndUpdate(
         { order_id: orderId },
         { order_completion_date: new Date() },
-        { upsert: true }
+        { upsert: true },
       );
     }
 

@@ -1,9 +1,9 @@
 import React from "react";
-import eleven from '../assets/11.avif';
+import eleven from "../assets/11.avif";
 
 const QualitySection: React.FC = () => {
   return (
-    <section className="w-full flex flex-col lg:flex-row h-auto lg:h-[400px]">
+    <section className="w-full flex flex-col lg:flex-row h-auto lg:h-100">
       {/* Left Red Side */}
       <div className="bg-brand-red lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
         <h3 className="text-3xl md:text-5xl font-normal text-white font-heading mb-6 leading-tight">
@@ -19,9 +19,9 @@ const QualitySection: React.FC = () => {
       </div>
 
       {/* Right Image Side */}
-      <div className="lg:w-1/2 h-[300px] lg:h-auto relative overflow-hidden bg-black">
+      <div className="lg:w-1/2 h-75 lg:h-auto relative overflow-hidden bg-black">
         <img
-          src={eleven}
+          src={eleven.src}
           alt="Car Dashboard"
           className="w-full h-full object-cover opacity-90"
         />

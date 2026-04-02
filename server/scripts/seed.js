@@ -53,9 +53,9 @@ const seed = async () => {
     console.log("🌱 Creating roles...");
 
     const [adminRole, managerRole, employeeRole] = await Promise.all([
-      CompanyRole.create({ company_role_name: "Admin" }),
-      CompanyRole.create({ company_role_name: "Manager" }),
-      CompanyRole.create({ company_role_name: "Employee" }),
+      CompanyRole.create({ company_role_name: "admin" }),
+      CompanyRole.create({ company_role_name: "manager" }),
+      CompanyRole.create({ company_role_name: "employee" }),
     ]);
 
     console.log("➕ Created roles");

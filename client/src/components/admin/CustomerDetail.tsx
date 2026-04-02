@@ -50,7 +50,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
             Customer Details
-            <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+            <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Viewing profile for {customer.firstName} {customer.lastName}

@@ -43,7 +43,7 @@ const EmployeeDetail: React.FC<EmployeeDetailProps> = ({
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
             Employee Details
-            <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+            <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
           </h2>
           <p className="text-sm text-gray-500">
             Viewing profile for {employee.firstName} {employee.lastName}

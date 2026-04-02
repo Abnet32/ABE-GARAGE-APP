@@ -13,7 +13,7 @@ import {
 interface FooterProps {
   onNavigate: (
     view: "home" | "login" | "admin" | "contact" | "services" | "about",
-    sectionId?: string
+    sectionId?: string,
   ) => void;
   showAppointmentBanner?: boolean;
 }
@@ -89,9 +89,7 @@ const Footer: React.FC<FooterProps> = ({
             </div>
             <div>
               <p className="text-xs text-gray-400">Call us on :</p>
-              <p className="text-xs text-white font-bold text-lg">
-                +251-922-019-117
-              </p>
+              <p className="text-lg text-white font-bold">+251-922-019-117</p>
             </div>
           </div>
         </div>

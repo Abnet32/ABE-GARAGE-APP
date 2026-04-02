@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from "react";
-import type { InventoryItem } from "../../types.ts";
+import type { InventoryItem } from "../../types";
 import {
   Package,
   Plus,
@@ -16,7 +16,7 @@ import {
   addInventoryItem,
   updateInventoryItem,
   deleteInventoryItem,
-} from "../../api/inventory.ts";
+} from "../../api/inventory";
 
 const InventoryManager: React.FC = () => {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -50,7 +50,7 @@ const InventoryManager: React.FC = () => {
   const filteredInventory = inventory.filter(
     (item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.partNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      item.partNumber.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // ---------------- HELPER TO TRANSFORM ITEM ----------------
@@ -77,11 +77,14 @@ const InventoryManager: React.FC = () => {
 
     try {
       if (editingItem) {
-        const updated = await updateInventoryItem(String(editingItem.id), payload);
+        const updated = await updateInventoryItem(
+          String(editingItem.id),
+          payload,
+        );
         setInventory((prev) =>
           prev.map((item) =>
-            item.id === updated._id ? transformItem(updated) : item
-          )
+            item.id === updated._id ? transformItem(updated) : item,
+          ),
         );
       } else {
         const newItem = await addInventoryItem(payload);
@@ -90,7 +93,7 @@ const InventoryManager: React.FC = () => {
       setShowForm(false);
       resetForm(); // close form after save
     } catch (err) {
-            setShowForm(false);
+      setShowForm(false);
       console.error("Failed to save item:", err);
     }
   };
@@ -111,7 +114,7 @@ const InventoryManager: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this inventory item?"
+      "Are you sure you want to delete this inventory item?",
     );
     if (!confirmDelete) return;
 
@@ -143,7 +146,7 @@ const InventoryManager: React.FC = () => {
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
             Inventory Management
-            <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+            <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
           </h2>
           <p className="text-gray-500 text-sm mt-2">
             Track parts, stock levels, and pricing.
@@ -273,7 +276,6 @@ const InventoryManager: React.FC = () => {
                 type="submit"
                 className="bg-brand-blue text-white px-8 py-3 rounded font-bold text-xs uppercase hover:bg-blue-900 shadow-md"
               >
-                
                 Save Item
               </button>
             </div>

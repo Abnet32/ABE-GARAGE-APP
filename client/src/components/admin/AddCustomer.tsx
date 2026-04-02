@@ -2,12 +2,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
-import type { Customer } from "../../types.ts";
-import {
-  addCustomer,
-  updateCustomer
-} from "../../api/Customer.ts";
-
+import type { Customer } from "../../types";
+import { addCustomer, updateCustomer } from "../../api/Customer";
 
 interface AddCustomerProps {
   onSubmit: (customer: Omit<Customer, "id" | "addedDate">) => void;
@@ -60,7 +56,11 @@ const AddCustomer: React.FC<AddCustomerProps> = ({
       // support Axios-like error objects with a response, standard Error instances, and other values
       if (typeof err === "object" && err !== null && "response" in err) {
         const anyErr = err as any;
-        alert(anyErr.response?.data?.message ?? anyErr.message ?? "Error adding customer");
+        alert(
+          anyErr.response?.data?.message ??
+            anyErr.message ??
+            "Error adding customer",
+        );
       } else if (err instanceof Error) {
         alert(err.message);
       } else {
@@ -86,7 +86,7 @@ const AddCustomer: React.FC<AddCustomerProps> = ({
           {isEditing
             ? `Edit: ${formData.firstName} ${formData.lastName}`
             : "Add a new customer"}
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+          <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
         </h2>
       </div>
 

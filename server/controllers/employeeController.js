@@ -6,64 +6,98 @@ import EmployeePass from "../models/EmployeePass.js";
 import EmployeeRole from "../models/EmployeeRole.js";
 import CompanyRole from "../models/CompanyRole.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not configured");
+  }
+  return process.env.JWT_SECRET;
+};
 
 export const generateToken = (userId, role) => {
-  return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ userId, role }, getJwtSecret(), { expiresIn: "1d" });
 };
 
 export const employeeLogin = async (req, res) => {
-  const { email, phone } = req.body;
+  try {
+    const { email, phone } = req.body;
 
-  if (!email || !phone) {
-    return res.status(400).json({ message: "Email and phone are required" });
+    if (
+      !email ||
+      !phone ||
+      !emailPattern.test(String(email).trim()) ||
+      String(phone).trim().length < 6
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Valid email and phone are required" });
+    }
+
+    const employee = await Employee.findOne({
+      email: String(email).trim().toLowerCase(),
+    });
+    if (!employee) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const info = await EmployeeInfo.findOne({ employee_id: employee._id });
+    if (!info || info.phone !== String(phone).trim()) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = generateToken(employee._id.toString(), "employee");
+    res.status(200).json({
+      token,
+      role: "employee",
+      userId: employee._id,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
-
-  // Step 1: find employee by email
-  const employee = await Employee.findOne({ email });
-  if (!employee) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  // Step 2: check phone in EmployeeInfo
-  const info = await EmployeeInfo.findOne({ employee_id: employee._id });
-  if (!info || info.phone !== phone) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  // Generate token
-  const token = generateToken(employee._id.toString(), "employee");
-  res.status(200).json({
-    token,
-    role: "employee",
-    userId: employee._id,
-  });
 };
 
 // Get all employees
 export const getAllEmployees = async (_req, res) => {
   try {
-    const employees = await Employee.find();
-    const detailedEmployees = await Promise.all(
-      employees.map(async (emp) => {
-        const info = await EmployeeInfo.findOne({ employee_id: emp._id });
-        const roleEntry = await EmployeeRole.findOne({ employee_id: emp._id });
-        const role = roleEntry
-          ? await CompanyRole.findById(roleEntry.company_role_id)
-          : null;
+    const employees = await Employee.find().lean();
+    const employeeIds = employees.map((emp) => emp._id);
 
-        return {
-          id: emp._id,
-          firstName: info?.first_name || "",
-          lastName: info?.last_name || "",
-          email: emp.email,
-          phone: info?.phone || "",
-          role: role?.company_role_name || "Employee",
-          active: info?.active ?? true,
-          addedDate: emp.createdAt?.toISOString().split("T")[0] || "",
-        };
-      })
+    const [infos, roleEntries] = await Promise.all([
+      EmployeeInfo.find({ employee_id: { $in: employeeIds } }).lean(),
+      EmployeeRole.find({ employee_id: { $in: employeeIds } }).lean(),
+    ]);
+
+    const roleIds = roleEntries.map((entry) => entry.company_role_id);
+    const roles = await CompanyRole.find({ _id: { $in: roleIds } }).lean();
+
+    const infoByEmployeeId = new Map(
+      infos.map((info) => [String(info.employee_id), info]),
     );
+    const roleEntryByEmployeeId = new Map(
+      roleEntries.map((entry) => [String(entry.employee_id), entry]),
+    );
+    const roleByRoleId = new Map(roles.map((role) => [String(role._id), role]));
+
+    const detailedEmployees = employees.map((emp) => {
+      const info = infoByEmployeeId.get(String(emp._id));
+      const roleEntry = roleEntryByEmployeeId.get(String(emp._id));
+      const role = roleEntry
+        ? roleByRoleId.get(String(roleEntry.company_role_id))
+        : null;
+
+      return {
+        id: emp._id,
+        firstName: info?.first_name || "",
+        lastName: info?.last_name || "",
+        email: emp.email,
+        phone: info?.phone || "",
+        role: role?.company_role_name || "Employee",
+        active: info?.active ?? true,
+        addedDate: emp.createdAt?.toISOString().split("T")[0] || "",
+      };
+    });
 
     res.json(detailedEmployees);
   } catch (err) {
@@ -78,18 +112,35 @@ export const addEmployee = async (req, res) => {
     const { firstName, lastName, email, phone, role, password, active } =
       req.body;
 
-    // Check if email exists
-    const existing = await Employee.findOne({ email });
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !role ||
+      !password ||
+      !emailPattern.test(String(email).trim()) ||
+      String(password).length < 8
+    ) {
+      return res.status(400).json({
+        message:
+          "firstName, lastName, valid email, phone, role, and password (min 8 chars) are required",
+      });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const existing = await Employee.findOne({ email: normalizedEmail });
     if (existing)
       return res.status(400).json({ message: "Email already exists" });
 
-    const employee = await Employee.create({ email });
+    const employee = await Employee.create({ email: normalizedEmail });
 
     await EmployeeInfo.create({
       employee_id: employee._id,
-      first_name: firstName,
-      last_name: lastName,
-      phone,
+      first_name: String(firstName).trim(),
+      last_name: String(lastName).trim(),
+      phone: String(phone).trim(),
       active,
     });
 

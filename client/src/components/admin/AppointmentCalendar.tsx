@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Order, Customer } from "../../types.ts";
+import type { Order, Customer } from "../../types";
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,20 +24,20 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
 
   const prevMonth = () =>
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
   const nextMonth = () =>
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
     );
   const goToToday = () => setCurrentDate(new Date());
 
   const getOrdersForDate = (day: number) => {
     const dateStr = `${currentDate.getFullYear()}-${String(
-      currentDate.getMonth() + 1
+      currentDate.getMonth() + 1,
     ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     return orders.filter(
-      (o) => o.date === dateStr || o.estimatedCompletionDate === dateStr
+      (o) => o.date === dateStr || o.estimatedCompletionDate === dateStr,
     );
   };
 
@@ -62,7 +62,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
             Service Calendar
-            <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+            <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
           </h2>
         </div>
 
@@ -127,7 +127,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
               new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth(),
-                day
+                day,
               ).toDateString();
 
             return (
@@ -148,7 +148,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
                 <div className="space-y-1 overflow-y-auto h-[calc(100%-2rem)] scrollbar-none">
                   {dayOrders.map((order) => {
                     const customer = customers.find(
-                      (c) => c.id === order.customerId
+                      (c) => c.id === order.customerId,
                     );
                     return (
                       <div
@@ -157,8 +157,8 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
                           order.status === "Completed"
                             ? "bg-green-100 border-green-200 text-green-800"
                             : order.status === "In Progress"
-                            ? "bg-red-50 border-red-200 text-red-800"
-                            : "bg-blue-50 border-blue-200 text-blue-800"
+                              ? "bg-red-50 border-red-200 text-red-800"
+                              : "bg-blue-50 border-blue-200 text-blue-800"
                         }`}
                       >
                         <span className="font-bold">#{order.id}</span>{" "}

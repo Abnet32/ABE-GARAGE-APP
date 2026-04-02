@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 // import type { AdminView } from "./components/AdminDashboard";
 
 export interface ServiceItem {
@@ -9,7 +8,7 @@ export interface ServiceItem {
 }
 
 export interface ChatMessage {
-  role: 'user' | 'model';
+  role: "user" | "model";
   text: string;
 }
 
@@ -34,7 +33,7 @@ export type AdminView =
   | "edit-customer"
   | "services"
   | "customer-detail"
-  | "employee-detail"
+  | "employee-detail";
 // Admin / Database Types
 
 export interface Employee {
@@ -43,11 +42,10 @@ export interface Employee {
   firstName: string;
   lastName: string;
   phone: string;
-  role: 'Admin' | 'Manager' | 'Employee';
+  role: "Admin" | "Manager" | "Employee" | "admin" | "manager" | "employee";
   active: boolean;
   addedDate: string;
   password?: string;
-  
 }
 
 export interface Customer {
@@ -88,7 +86,7 @@ export interface Order {
   vehicleId: number;
   employeeId?: number; // Assigned to
   date: string;
-  status: 'Received' | 'In Progress' | 'Completed' | 'Canceled';
+  status: "Received" | "In Progress" | "Completed" | "Canceled";
   description: string; // Additional requests
   serviceIds: number[];
   hash?: string; // Order hash
@@ -106,4 +104,31 @@ export interface InventoryItem {
   quantity: number;
   price: number;
   minStockLevel: number;
+}
+
+export interface DashboardSummary {
+  totals: {
+    orders: number;
+    pendingOrders: number;
+    employees: number;
+    customers: number;
+    activeServices: number;
+    lowStockItems: number;
+  };
+  statuses: {
+    Received: number;
+    "In Progress": number;
+    Completed: number;
+    Canceled: number;
+  };
+  revenue: {
+    total: number;
+  };
+  recentActivity: Array<{
+    id: string;
+    orderHash?: string;
+    status: string;
+    date?: string;
+    customerName: string;
+  }>;
 }

@@ -45,7 +45,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => (
         alt={service.title}
         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
     </div>
 
     <div className="p-8 flex flex-col flex-1">
@@ -76,7 +76,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
   const services: ServiceData[] = [
     {
       title: "Performance Upgrade",
-      image: one,
+      image: one.src,
       description:
         "Unlock the full potential of your vehicle with our expert performance tuning and upgrade services.",
       extendedDescription:
@@ -94,7 +94,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
     },
     {
       title: "Transmission Services",
-      image: two,
+      image: two.src,
       description:
         "Complete transmission maintenance, repair, and replacement services for automatic and manual vehicles.",
       extendedDescription:
@@ -110,7 +110,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
     },
     {
       title: "Brake Repair & Service",
-      image: three,
+      image: three.src,
       description:
         "Safety first. We provide comprehensive brake inspections, pad replacements, and rotor resurfacing.",
       extendedDescription:
@@ -126,7 +126,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
     },
     {
       title: "Engine Service & Repair",
-      image: four,
+      image: four.src,
       description:
         "From check engine lights to complete overhauls, our expert mechanics handle all engine related issues.",
       extendedDescription:
@@ -142,7 +142,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
     },
     {
       title: "Tyre & Wheels",
-      image: five,
+      image: five.src,
       description:
         "Tire rotation, balancing, alignment and replacement services to ensure a smooth and safe ride.",
       extendedDescription:
@@ -158,7 +158,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
     },
     {
       title: "Denting & Painting",
-      image: six,
+      image: six.src,
       description:
         "Restore your car to its factory glory with our professional dent removal and paint matching services.",
       extendedDescription:
@@ -198,7 +198,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onLearnMore }) => {
               onClick={() =>
                 onLearnMore(
                   service.prompt ||
-                    `I would like to get a price estimate for ${service.title}. What is the typical price range for this service in Addis Ababa?`
+                    `I would like to get a price estimate for ${service.title}. What is the typical price range for this service in Addis Ababa?`,
                 )
               }
             />

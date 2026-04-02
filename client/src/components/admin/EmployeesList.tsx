@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Edit, Search, CheckCircle, ExternalLink } from "lucide-react";
-import type { Employee } from "../../types.ts";
-import { getEmployees } from "../../api/employee.ts";
+import type { Employee } from "../../types";
+import { getEmployees } from "../../api/employee";
 
 interface EmployeesListProps {
   // employees: (EmployeeData & { id: string; addedDate: string })[];
@@ -35,7 +35,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
         setEmployees(sorted);
         setLoading(false);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         setError("Failed to load Employees");
         setLoading(false);
@@ -49,7 +49,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       c.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.phone.includes(searchTerm)
+      c.phone.includes(searchTerm),
   );
 
   const isSearching = searchTerm.trim().length > 0;
@@ -62,7 +62,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
       <div className="mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
           Employees
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+          <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
         </h2>
       </div>
 
@@ -83,7 +83,7 @@ const EmployeesList: React.FC<EmployeesListProps> = ({
 
       {/* Search Results */}
       {isSearching && (
-        <div className="border border-gray-100 rounded overflow-hidden max-h-[400px] overflow-y-auto mt-4">
+        <div className="border border-gray-100 rounded overflow-hidden max-h-100 overflow-y-auto mt-4">
           {filteredEmployees.map((e) => (
             <div
               key={e.id}

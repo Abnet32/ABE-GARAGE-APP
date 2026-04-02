@@ -1,18 +1,16 @@
 import React, { useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
-
-const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
+import { loginUser } from "../api/Auth";
 
 interface LoginProps {
-  onLogin: (token: string, role: string) => void;
+  onLogin: (token: string, role: string, userId?: string) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [role, setRole] = useState<"admin" | "employee" | "customer">("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,30 +20,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      let response;
+      const data = await loginUser({ email, password });
 
-      if (role === "admin") {
-        // Admin login (email + password)
-        response = await axios.post(`${API_BASE_URL}/auth/login`, {
-          email,
-          password,
-        });
-      } else if (role === "employee") {
-        // Employee login (email + phone)
-        response = await axios.post(`${API_BASE_URL}/employees/login`, {
-          email,
-          phone,
-        });
-      } else if (role === "customer") {
-        // Customer login (email + phone)
-        response = await axios.post(`${API_BASE_URL}/customers/login`, {
-          email,
-          phone,
-        });
+      if (!data?.token) {
+        throw new Error("Invalid login response from server");
       }
 
-      const data = response?.data;
-      onLogin(data.token, role);
+      onLogin(data.token, data.role || "admin", data.userId);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         setError(err.response.data.message);
@@ -60,15 +41,17 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <section className="py-20 bg-white min-h-[600px] flex flex-col items-center justify-center animate-in fade-in duration-500">
+    <section className="py-20 bg-white min-h-150 flex flex-col items-center justify-center animate-in fade-in duration-500">
       <div className="container mx-auto px-4 max-w-lg">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-brand-blue font-heading mb-4 relative inline-block">
-            <div className="absolute -left-12 top-1/2 h-[4px] w-8 bg-brand-red"></div>
+            <div className="absolute -left-12 top-1/2 h-1 w-8 bg-brand-red"></div>
             Login to your account
-            <div className="absolute -right-12 top-1/2 h-[4px] w-8 bg-brand-red"></div>
+            <div className="absolute -right-12 top-1/2 h-1 w-8 bg-brand-red"></div>
           </h2>
-          <p className="text-gray-400 text-xs">Select your role and login</p>
+          <p className="text-gray-400 text-xs">
+            Use your admin email and password
+          </p>
         </div>
 
         <form
@@ -81,24 +64,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               {error}
             </div>
           )}
-
-          {/* Role Selector */}
-          <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-              Select Role
-            </label>
-            <select
-              value={role}
-              onChange={(e) =>
-                setRole(e.target.value as "admin" | "employee" | "customer")
-              }
-              className="w-full p-4 border border-gray-200 text-sm focus:outline-none focus:border-brand-red transition-colors rounded bg-white text-gray-800"
-            >
-              <option value="admin">Admin</option>
-              <option value="employee">Employee</option>
-              <option value="customer">Customer</option>
-            </select>
-          </div>
 
           {/* Email */}
           <div>
@@ -115,38 +80,29 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             />
           </div>
 
-          {/* Conditional Fields */}
-          {role === "admin" && (
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-                Password
-              </label>
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
+              Password
+            </label>
+            <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-4 border border-gray-200 text-sm focus:outline-none focus:border-brand-red transition-colors rounded bg-white text-gray-800"
+                className="w-full p-4 pr-12 border border-gray-200 text-sm focus:outline-none focus:border-brand-red transition-colors rounded bg-white text-gray-800"
                 required
               />
+              <button
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
-          )}
-
-          {(role === "employee" || role === "customer") && (
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-2">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                placeholder="e.g., 555-1234"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full p-4 border border-gray-200 text-sm focus:outline-none focus:border-brand-red transition-colors rounded bg-white text-gray-800"
-                required
-              />
-            </div>
-          )}
+          </div>
 
           <button
             type="submit"

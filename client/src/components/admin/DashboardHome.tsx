@@ -172,7 +172,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({ setCurrentView }) => {
         <div className="mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-brand-blue relative inline-block">
             Admin Dashboard
-            <div className="absolute -right-12 top-1/2 h-[2px] w-8 bg-red-600"></div>
+            <div className="absolute -right-12 top-1/2 h-0.5 w-8 bg-red-600"></div>
           </h2>
           <p className="text-gray-500 text-sm mt-2">
             Quick access to all garage services.

@@ -6,7 +6,7 @@ import ten from "../assets/10.avif";
 interface AboutProps {
   onNavigate?: (
     view: "home" | "login" | "admin" | "contact" | "services" | "about",
-    sectionId?: string
+    sectionId?: string,
   ) => void;
 }
 
@@ -17,10 +17,10 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Image Grid Left */}
           <div className="lg:w-1/2 relative">
-            <div className="flex gap-4 h-[450px]">
+            <div className="flex gap-4 h-112.5">
               <div className="w-1/2 h-full bg-gray-200 relative overflow-hidden group">
                 <img
-                  src={nine}
+                  src={nine.src}
                   alt="Oil change"
                   className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
                 />
@@ -28,7 +28,7 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
               </div>
               <div className="w-1/2 h-3/4 self-end bg-gray-300 relative overflow-hidden group">
                 <img
-                  src={ten}
+                  src={ten.src}
                   alt="Car Service"
                   className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
                 />
@@ -37,7 +37,7 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
             </div>
             {/* Years Experience Badge */}
             <div className="absolute bottom-0 left-[50%] translate-x-[-50%] translate-y-[20%] bg-white p-2 shadow-xl z-10">
-              <div className="border-2 border-brand-red/20 p-6 text-center bg-white min-w-[140px]">
+              <div className="border-2 border-brand-red/20 p-6 text-center bg-white min-w-35">
                 <span className="block text-5xl font-black text-brand-red font-heading leading-none">
                   24
                 </span>

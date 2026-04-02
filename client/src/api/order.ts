@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/api/order.ts
-import axios from "axios";
+import api from "../utils/axios";
 import type {
   Order as FOrder,
   Customer as FCustomer,
@@ -8,7 +8,7 @@ import type {
   Employee as FEmployee,
 } from "../types";
 
-const API_URL = `${import.meta.env.VITE_BASE_API_URL}/orders`;
+const API_URL = "/orders";
 
 export interface CreateOrderData {
   customer_id: string;
@@ -24,7 +24,7 @@ export interface UpdateStatusData {
 }
 
 export const searchCustomersAPI = async (query: any) =>
-  axios.get(`/api/customers/search?q=${query}`).then((res) => res.data);
+  api.get(`/customers/search?q=${query}`).then((res) => res.data);
 
 /** ---------- Helpers ---------- **/
 
@@ -119,14 +119,14 @@ const transformOrder = (data: any): FOrder => {
 
   const serviceIdsRaw = Array.isArray(data.services)
     ? data.services.map(
-        (s: any) => pick(s, "service_id", "_id", "serviceId", "id") ?? s
+        (s: any) => pick(s, "service_id", "_id", "serviceId", "id") ?? s,
       )
     : [];
 
   return {
     id: toNumberId(pick(data, "_id", "id")),
     customerId: toNumberId(
-      pick(customerObj ?? data, "_id", "customer_id", "id")
+      pick(customerObj ?? data, "_id", "customer_id", "id"),
     ),
     vehicleId: toNumberId(pick(vehicleObj ?? data, "_id", "vehicle_id", "id")),
     employeeId: employeeObj
@@ -205,7 +205,7 @@ export const getAllData = async (): Promise<{
   employees: FEmployee[];
 }> => {
   try {
-    const res = await axios.get(API_URL);
+    const res = await api.get(API_URL);
     const data = Array.isArray(res.data) ? res.data : [];
     return normalizeBackendOrders(data);
   } catch (err) {
@@ -216,7 +216,7 @@ export const getAllData = async (): Promise<{
 
 export const getOrders = async (): Promise<FOrder[]> => {
   try {
-    const res = await axios.get(API_URL);
+    const res = await api.get(API_URL);
     const data = Array.isArray(res.data) ? res.data : [];
     return data.map(transformOrder);
   } catch (err) {
@@ -227,7 +227,7 @@ export const getOrders = async (): Promise<FOrder[]> => {
 
 export const getOrderById = async (id: string): Promise<FOrder> => {
   try {
-    const res = await axios.get(`${API_URL}/${id}`);
+    const res = await api.get(`${API_URL}/${id}`);
     return transformOrder(res.data);
   } catch (err) {
     console.error(`Failed to fetch order ${id}:`, err);
@@ -237,7 +237,7 @@ export const getOrderById = async (id: string): Promise<FOrder> => {
 
 export const createOrder = async (data: CreateOrderData): Promise<FOrder> => {
   try {
-    const res = await axios.post(API_URL, data);
+    const res = await api.post(API_URL, data);
     if (res.data?.order) return transformOrder(res.data.order);
     if (res.data?._id) return transformOrder(res.data);
     if (res.data?.orderId) return getOrderById(res.data.orderId);
@@ -250,10 +250,10 @@ export const createOrder = async (data: CreateOrderData): Promise<FOrder> => {
 
 export const updateOrderStatus = async (
   id: string | number,
-  status: FOrder["status"]
+  status: FOrder["status"],
 ): Promise<FOrder> => {
   try {
-    const res = await axios.put(`${API_URL}/${String(id)}`, {
+    const res = await api.put(`${API_URL}/${String(id)}`, {
       order_status: status,
     });
     // Prefer to fetch the order to get populated nested objects
@@ -267,7 +267,7 @@ export const updateOrderStatus = async (
 
 export const deleteOrder = async (id: string | number): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/${String(id)}`);
+    await api.delete(`${API_URL}/${String(id)}`);
   } catch (err) {
     console.error(`Failed to delete order ${id}:`, err);
     throw err;

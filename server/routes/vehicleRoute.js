@@ -6,13 +6,15 @@ import {
   updateVehicle,
   deleteVehicle,
 } from "../controllers/vehicleController.js";
+import { auth } from "../middleware/authMiddleware.js";
+import { adminOnly } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getVehicles);
-router.get("/:id", getVehicleById);
-router.post("/", createVehicle);
-router.put("/:id", updateVehicle);
-router.delete("/:id", deleteVehicle);
+router.get("/", auth, adminOnly, getVehicles);
+router.get("/:id", auth, adminOnly, getVehicleById);
+router.post("/", auth, adminOnly, createVehicle);
+router.put("/:id", auth, adminOnly, updateVehicle);
+router.delete("/:id", auth, adminOnly, deleteVehicle);
 
 export default router;

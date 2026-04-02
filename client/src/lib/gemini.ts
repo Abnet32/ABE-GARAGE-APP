@@ -1,19 +1,20 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
 // Initialize safely - in a real app, you'd handle missing keys more gracefully in the UI
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
-export const generateMechanicResponse = async (userPrompt: string): Promise<string> => {
+export const generateMechanicResponse = async (
+  userPrompt: string,
+): Promise<string> => {
   if (!ai) {
     return "I'm sorry, my AI brain (API Key) is missing. Please check the configuration.";
   }
 
   try {
-    const model = 'gemini-2.5-flash';
-    
+    const model = "gemini-2.5-flash";
+
     const response = await ai.models.generateContent({
       model: model,
       contents: userPrompt,
@@ -61,7 +62,7 @@ export const generateMechanicResponse = async (userPrompt: string): Promise<stri
         - If asked for a **Quote** or **Price Estimate**, provide a *rough range* based on industry standards for Addis Ababa, but ALWAYS state that "Final pricing depends on inspection. Please visit us at Shiromeda for an exact quote."
         - If asked about appointments, encourage them to call us (+251922019117) or visit the shop during working hours.
         - Keep responses concise and easy to read (use bullet points for lists).`,
-      }
+      },
     });
 
     return response.text || "I couldn't generate a response at this time.";

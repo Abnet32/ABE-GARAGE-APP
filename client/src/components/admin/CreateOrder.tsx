@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/admin/CreateOrder.tsx
 import React, { useState } from "react";
-import type {
-  Customer,
-  Vehicle,
-  Service,
-  Order,
-  Employee,
-} from "../../types.ts";
+import type { Customer, Vehicle, Service, Order, Employee } from "../../types";
 import { Search, CheckCircle, X } from "lucide-react";
-import { createOrder as createOrderAPI } from "../../api/order.ts";
+import { createOrder as createOrderAPI } from "../../api/order";
 
 interface CreateOrderProps {
   customers: Customer[];
@@ -32,11 +26,11 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-    null
+    null,
   );
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [selectedServices, setSelectedServices] = useState<(number | string)[]>(
-    []
+    [],
   );
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,7 +52,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
     (c) =>
       c.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.phone.includes(searchTerm)
+      c.phone.includes(searchTerm),
   );
 
   const customerVehicles = selectedCustomer
@@ -120,7 +114,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
       console.error("Failed to create order:", error);
       alert(
         error.response?.data?.message ||
-          "Failed to create order. Please try again."
+          "Failed to create order. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -132,7 +126,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
       <div className="mb-10">
         <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading relative inline-block">
           Create a new order
-          <div className="absolute -right-20 top-1/2 h-[3px] w-16 bg-brand-red hidden md:block"></div>
+          <div className="absolute -right-20 top-1/2 h-0.75 w-16 bg-brand-red hidden md:block"></div>
         </h2>
       </div>
 
@@ -157,7 +151,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
           </div>
 
           {searchTerm && (
-            <div className="border border-gray-100 rounded overflow-hidden max-h-[400px] overflow-y-auto">
+            <div className="border border-gray-100 rounded overflow-hidden max-h-100 overflow-y-auto">
               {filteredCustomers.map((c) => (
                 <div
                   key={c.id}
@@ -371,7 +365,7 @@ const CreateOrder: React.FC<CreateOrderProps> = ({
                         setSelectedServices([...selectedServices, service.id]);
                       } else {
                         setSelectedServices(
-                          selectedServices.filter((id) => id !== service.id)
+                          selectedServices.filter((id) => id !== service.id),
                         );
                       }
                     }}

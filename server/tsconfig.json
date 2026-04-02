@@ -10,8 +10,7 @@
     "checkJs": false, // Don’t type-check .js files
     "skipLibCheck": true, // Skip type checking of node_modules
     "resolveJsonModule": true, // Allow importing JSON files
-    "strict": false, // Turn off strict mode (optional)
-    "ignoreDeprecations": "6.0" // Silence deprecation warnings
+    "strict": false // Turn off strict mode (optional)
   },
   "include": [
     "**/*.ts",

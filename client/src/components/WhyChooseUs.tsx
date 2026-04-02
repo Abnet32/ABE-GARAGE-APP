@@ -1,6 +1,6 @@
 import React from "react";
 import { UserCheck, Wrench, Tag, Trophy, Check } from "lucide-react";
-import fourteen from '../assets/14.avif'
+import fourteen from "../assets/14.avif";
 
 const FeatureItem = ({
   icon,
@@ -43,7 +43,7 @@ const WhyChooseUs: React.FC = () => {
           <div className="lg:w-1/2">
             <h3 className="text-3xl font-bold text-brand-blue font-heading relative inline-block mb-8">
               Why Choose Us
-              <div className="absolute -right-16 top-1/2 h-[2px] w-12 bg-brand-red"></div>
+              <div className="absolute -right-16 top-1/2 h-0.5 w-12 bg-brand-red"></div>
             </h3>
             <p className="text-gray-500 text-sm mb-8">
               Bring to the table win-win survival strategies to ensure proactive
@@ -75,13 +75,13 @@ const WhyChooseUs: React.FC = () => {
           <div className="lg:w-1/2">
             <h3 className="text-3xl font-bold text-brand-blue font-heading relative inline-block mb-8">
               Addtional Services
-              <div className="absolute -right-16 top-1/2 h-[2px] w-12 bg-brand-red"></div>
+              <div className="absolute -right-16 top-1/2 h-0.5 w-12 bg-brand-red"></div>
             </h3>
 
             <div className="flex flex-col md:flex-row gap-8">
               <div className="md:w-1/2 h-[320px] overflow-hidden">
                 <img
-                  src={fourteen}
+                  src={fourteen.src}
                   alt="Classic Car"
                   className="w-full h-full object-cover"
                 />

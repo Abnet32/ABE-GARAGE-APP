@@ -44,7 +44,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => (
         alt={service.title}
         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
     </div>
 
     <div className="p-8 flex flex-col flex-1">
@@ -78,7 +78,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
   const services: ServiceData[] = [
     {
       title: "Performance Upgrade",
-      image: one,
+      image: one.src,
       prompt:
         "I'm interested in upgrading my car's performance. Can you explain what options you offer, such as engine tuning, turbo upgrades, or suspension modifications?",
       shortDescription: "Unlock your car's true potential with expert tuning.",
@@ -95,7 +95,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
     },
     {
       title: "Transmission Services",
-      image: two,
+      image: two.src,
       prompt:
         "I need help with my transmission. What kind of services do you offer for gear issues?",
       shortDescription: "Smooth shifting and drivetrain maintenance.",
@@ -112,7 +112,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
     },
     {
       title: "Brake Repair & Service",
-      image: three,
+      image: three.src,
       prompt:
         "My brakes are making noise. How much for an inspection and repair?",
       shortDescription:
@@ -130,7 +130,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
     },
     {
       title: "Engine Service & Repair",
-      image: four,
+      image: four.src,
       prompt: "My check engine light is on. Can you diagnose the issue?",
       shortDescription: "Expert diagnostics and complete engine overhauls.",
       extendedDescription:
@@ -146,7 +146,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
     },
     {
       title: "Tyre & Wheels",
-      image: five,
+      image: five.src,
       prompt: "I need new tires or an alignment. What are your prices?",
       shortDescription:
         "Maximize traction and fuel economy with our tire services.",
@@ -163,7 +163,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
     },
     {
       title: "Denting & Painting",
-      image: six,
+      image: six.src,
       prompt: "Can you give me a quote for removing dents and painting my car?",
       shortDescription:
         "Restore your car's aesthetic appeal to showroom quality.",
@@ -186,7 +186,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
         <div className="mb-12">
           <h3 className="text-3xl font-bold text-brand-blue font-heading relative inline-block">
             Our Services
-            <div className="absolute -right-16 top-1/2 h-[2px] w-12 bg-brand-red"></div>
+            <div className="absolute -right-16 top-1/2 h-0.5 w-12 bg-brand-red"></div>
           </h3>
           <p className="mt-6 text-gray-500 text-sm max-w-3xl leading-relaxed">
             We offer a comprehensive range of car services using the latest
@@ -202,7 +202,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
               onClick={() =>
                 onLearnMore(
                   service.prompt ||
-                    `I would like to know more about ${service.title}.`
+                    `I would like to know more about ${service.title}.`,
                 )
               }
             />
