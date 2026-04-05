@@ -7,20 +7,22 @@ type RouteContext = {
   params?: Record<string, string>;
 };
 
-type Handler = (req: any, res: any, next?: (err?: unknown) => void) => unknown;
-
 export const runRoute = async (
   request: NextRequest,
   context: RouteContext,
-  handler: Handler,
-  middlewares: Handler[] = [],
+  handler: (...args: any[]) => unknown,
+  middlewares: unknown = [],
 ): Promise<NextResponse> => {
   await connectDB();
+
+  const middlewareChain = Array.isArray(middlewares)
+    ? (middlewares as Array<(...args: any[]) => unknown>)
+    : [];
 
   return runExpressChain({
     request,
     params: context.params,
-    middlewares,
+    middlewares: middlewareChain,
     handler,
   });
 };

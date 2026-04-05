@@ -4,13 +4,13 @@ import {
   getOrders,
 } from "@/lib/server/controllers/orderController";
 import { auth } from "@/lib/server/middleware/authMiddleware";
-import { adminOnly } from "@/lib/server/middleware/roleMiddleware";
+import { adminOrEmployee } from "@/lib/server/middleware/roleMiddleware";
 import { runRoute } from "@/lib/server/routeRunner";
 
 export async function GET(request: NextRequest) {
-  return runRoute(request, {}, getOrders, [auth, adminOnly] as unknown as Array<(...args: unknown[]) => unknown>);
+  return runRoute(request, {}, getOrders, [auth, adminOrEmployee]);
 }
 
 export async function POST(request: NextRequest) {
-  return runRoute(request, {}, createOrder, [auth, adminOnly] as unknown as Array<(...args: unknown[]) => unknown>);
+  return runRoute(request, {}, createOrder, [auth, adminOrEmployee]);
 }
