@@ -3,7 +3,7 @@ import "./globals.css";
 import { AppProviders } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Abe Garage",
+  title: "አቤ ጋራዥ ",
   description: "Abe Garage Next.js migration",
 };
 
