@@ -5,6 +5,37 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 // Initialize safely - in a real app, you'd handle missing keys more gracefully in the UI
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
+const getGeminiErrorDetails = (error: unknown) => {
+  if (!error || typeof error !== "object") {
+    return { code: 0, message: "Unknown error", status: "UNKNOWN" };
+  }
+
+  const maybe = error as {
+    message?: unknown;
+    status?: unknown;
+    error?: { code?: unknown; message?: unknown; status?: unknown };
+  };
+
+  const nested = maybe.error;
+
+  const code = Number(nested?.code ?? 0);
+  const message = String(
+    nested?.message ?? maybe.message ?? "Gemini request failed",
+  );
+  const status = String(nested?.status ?? maybe.status ?? "UNKNOWN");
+
+  return { code, message, status };
+};
+
+const isLeakedOrInvalidKeyError = (error: unknown) => {
+  const details = getGeminiErrorDetails(error);
+  return (
+    details.code === 403 ||
+    details.status === "PERMISSION_DENIED" ||
+    details.message.toLowerCase().includes("api key was reported as leaked")
+  );
+};
+
 export const generateMechanicResponse = async (
   userPrompt: string,
 ): Promise<string> => {
@@ -67,7 +98,11 @@ export const generateMechanicResponse = async (
 
     return response.text || "I couldn't generate a response at this time.";
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    if (isLeakedOrInvalidKeyError(error)) {
+      return "Our AI assistant is temporarily unavailable due to an API key issue. Please contact support or try again later.";
+    }
+
+    console.error("Gemini API Error:", getGeminiErrorDetails(error));
     return "Sorry, I'm having trouble checking under the hood right now. Please try again later.";
   }
 };
