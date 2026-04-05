@@ -8,8 +8,8 @@ const mongoConnectionString =
   process.env.MONGODB_URL || "mongodb://127.0.0.1:27017";
 
 const mongoClient = new MongoClient(mongoConnectionString, {
-  serverSelectionTimeoutMS: 5000,
-  connectTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 12000,
+  connectTimeoutMS: 12000,
   socketTimeoutMS: 15000,
   family: 4,
   maxPoolSize: 20,

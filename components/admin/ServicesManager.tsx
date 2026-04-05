@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import type { Service } from "@/types";
 import { Edit, Trash2 } from "lucide-react";
+import axios from "axios";
 import {
   getServices,
   addServiceAPI,
@@ -19,6 +20,37 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const readErrorMessage = (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      const data = error.response?.data;
+      if (typeof data === "string") {
+        return data;
+      }
+      if (data && typeof data === "object") {
+        const message = (data as { message?: unknown }).message;
+        if (typeof message === "string" && message.trim()) {
+          return message;
+        }
+      }
+      if (error.code === "ECONNABORTED") {
+        return "Request timed out. Please try again.";
+      }
+      if (error.response?.status === 401) {
+        return "Your session has expired. Please log in again.";
+      }
+      if (error.response?.status === 503) {
+        return "Service temporarily unavailable. Please retry in a moment.";
+      }
+      return error.message;
+    }
+
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return "Unexpected error";
+  };
+
   useEffect(() => {
     fetchServices();
   }, []);
@@ -30,7 +62,7 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
       setServices(data);
     } catch (error) {
       console.error(error);
-      alert("Failed to fetch services");
+      alert(`Failed to fetch services: ${readErrorMessage(error)}`);
     } finally {
       setLoading(false);
     }
@@ -59,7 +91,7 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
       setFormData({ name: "", description: "" });
     } catch (error) {
       console.error(error);
-      alert("Failed to save service");
+      alert(`Failed to save service: ${readErrorMessage(error)}`);
     }
   };
 
@@ -78,7 +110,7 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
       setServices((prev) => prev.filter((s) => s.id !== id));
     } catch (error) {
       console.error(error);
-      alert("Failed to delete service");
+      alert(`Failed to delete service: ${readErrorMessage(error)}`);
     }
   };
 
