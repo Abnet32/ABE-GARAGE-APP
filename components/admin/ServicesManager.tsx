@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { Service } from "@/types";
 import { Edit, Trash2 } from "lucide-react";
 import {
@@ -23,11 +23,7 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    fetchServices();
-  }, []);
-
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getServices();
@@ -41,7 +37,11 @@ const ServicesManager: React.FC<ServicesManagerProps> = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

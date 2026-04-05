@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { InventoryItem } from "@/types";
 import {
   Package,
@@ -38,7 +38,7 @@ const InventoryManager: React.FC = () => {
   const { showToast } = useToast();
 
   // ---------------- FETCH INVENTORY ----------------
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getInventory();
@@ -52,11 +52,11 @@ const InventoryManager: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     fetchInventory();
-  }, []);
+  }, [fetchInventory]);
 
   const filteredInventory = inventory.filter(
     (item) =>

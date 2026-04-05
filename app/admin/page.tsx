@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import type { AdminView } from "@/types";
 import { authClient } from "@/lib/auth-client";
 
-export default function AdminPage() {
+function AdminPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
@@ -96,5 +96,13 @@ export default function AdminPage() {
       onNavigate={handleNavigate}
       onLogout={handleLogout}
     />
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminPageContent />
+    </Suspense>
   );
 }

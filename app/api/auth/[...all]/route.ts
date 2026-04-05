@@ -1,17 +1,37 @@
 import { toNextJsHandler } from "better-auth/next-js";
 import { auth, ensureAuthMongoConnected } from "@/lib/auth";
+import type { NextRequest } from "next/server";
 
 const handlers = toNextJsHandler(auth);
 
-const withAuthDb =
-  (handler: (...args: never[]) => unknown) =>
-  async (...args: never[]) => {
-    await ensureAuthMongoConnected();
-    return handler(...args);
-  };
+type AuthRouteContext = { params: Promise<{ all: string[] }> };
 
-export const GET = withAuthDb(handlers.GET);
-export const POST = withAuthDb(handlers.POST);
-export const PUT = withAuthDb(handlers.PUT);
-export const PATCH = withAuthDb(handlers.PATCH);
-export const DELETE = withAuthDb(handlers.DELETE);
+export async function GET(request: NextRequest, context: AuthRouteContext) {
+  await ensureAuthMongoConnected();
+  void context;
+  return handlers.GET(request);
+}
+
+export async function POST(request: NextRequest, context: AuthRouteContext) {
+  await ensureAuthMongoConnected();
+  void context;
+  return handlers.POST(request);
+}
+
+export async function PUT(request: NextRequest, context: AuthRouteContext) {
+  await ensureAuthMongoConnected();
+  void context;
+  return handlers.PUT(request);
+}
+
+export async function PATCH(request: NextRequest, context: AuthRouteContext) {
+  await ensureAuthMongoConnected();
+  void context;
+  return handlers.PATCH(request);
+}
+
+export async function DELETE(request: NextRequest, context: AuthRouteContext) {
+  await ensureAuthMongoConnected();
+  void context;
+  return handlers.DELETE(request);
+}
