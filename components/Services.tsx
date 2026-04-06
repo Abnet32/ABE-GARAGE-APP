@@ -117,7 +117,7 @@ const Services: React.FC<ServicesProps> = ({ onLearnMore }) => {
       title: "Brake Repair & Service",
       image: three.src,
       prompt:
-        "My brakes are making noise. How much for an inspec",
+        "My brakes are making noise. How much for an inspe",
       shortDescription:
         "Comprehensive brake inspections and repairs for safety.",
       extendedDescription:
