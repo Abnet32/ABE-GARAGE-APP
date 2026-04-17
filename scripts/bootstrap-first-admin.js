@@ -43,6 +43,7 @@ const auth = betterAuth({
   },
   trustedOrigins: [
     "http://localhost:3000",
+    "https://abe-garage-app.vercel.app",
     "http://127.0.0.1:3000",
     process.env.BETTER_AUTH_URL || "http://localhost:3000",
   ],
